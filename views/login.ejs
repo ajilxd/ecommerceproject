@@ -1,0 +1,54 @@
+<%- include("./header.ejs")%>
+<%- include("./partials/navbar.ejs")%>
+<div class="container is-flex is-align-items-center is-justify-content-center" style="height: 600px;">
+    <form class="box col-6" id="loginform" action="/login" method="post">
+      <div class="field">
+        <h3 class="is-size-3 has-text-black has-text-centered has-text-weight-semibold">Login</h3>
+        <label class="label">Email</label>
+        <div class="control">
+          <input class="input" type="email" name="email"  id="emailin" placeholder="e.g. alex@example.com">
+        </div>
+      </div>
+  
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input class="input" type="password" name="password" id="passwordin" placeholder="********">
+        </div>
+      </div>
+      <div class="text-danger is-size-6 " id="errormessage"></div>
+      <div class="d-flex  justify-content-between ">
+        <button class="button is-primary" type="submit">Sign in</button>
+         <a href="/register" class="button is-success">create a new account</a>
+      </div>
+      <div><a href="/forgetpassword" class="button is-ghost">forget password</a></div>
+    </form>
+  </div>
+  
+  <%- include("./footer.ejs")%>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      const errormessage=document.getElementById('errormessage');
+      document.getElementById('loginform').addEventListener('submit',function(event){
+        event.preventDefault();
+        const password = document.getElementById('passwordin').value;
+        const email =document.getElementById('emailin').value;
+        console.log(password)
+        axios.post('/login',{email,password})
+        .then((response)=>{
+          console.log(response.data);
+          if(response.data===true){
+            window.location.href='/';
+          }else if(response.data===false){
+            errormessage.textContent="Invalid email or password"
+          }else{
+            errormessage.textContent=response.data;
+          }
+        })
+        .catch((error)=>{
+          console.log(error);
+        })
+      })
+    })
+  </script>

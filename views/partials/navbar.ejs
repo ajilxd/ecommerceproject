@@ -1,0 +1,102 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+
+    <div class="container">
+        <a class="navbar-brand" href="/">Furni<span>.</span></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsFurni">
+            <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li><a class="nav-link" href="/shop">Shop</a></li>
+            </ul>
+
+            <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+                <div class="dropdown is-right is-hoverable">
+                    <div class="dropdown-trigger">
+                      <button class="button is-outlined is-success" aria-haspopup="true" aria-controls="dropdown-menu">
+                        <span><%if(userData.name){%><%=userData.name%><%}else{%> User<%}%></span>
+                        <span class="icon is-small">
+                          <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                      <div class="dropdown-content">
+                        <a href="/notification" class="dropdown-item">notifications</a>
+                        <a href="/wishlist" class="dropdown-item">wishlist</a>
+                        <a href="/profile" class="dropdown-item">Edit Profile</a>
+                        <hr class="dropdown-divider">
+                       <%if(userData.length||userData.name){%>
+                        <p class="dropdown-item" onclick="openModal()">Logout</p>
+                        <%}else{%>
+                          <a href="/login" class="dropdown-item">Login</a>
+                          <%=userData.name%>
+                        <%}%>
+                       
+                      
+                       
+                      </div>
+                    </div>
+                  </div>
+                  
+                <li><a class="nav-link" href="/cart"><img src="/images/cart.svg"></a></li>
+                
+            </ul>
+        </div>
+    </div>
+        
+</nav>
+
+
+
+<div id="logoutModal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+      <header class="modal-card-head">
+          <p class="modal-card-title">Logout</p>
+          <button class="delete" aria-label="close" onclick="closeModal()"></button>
+      </header>
+      <section class="modal-card-body">
+          Are you sure you want to logout?
+      </section>
+      <footer class="modal-card-foot">
+          <button class="button is-danger" onclick="logout()">Logout</button>
+          <button class="button" onclick="closeModal()">Cancel</button>
+      </footer>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+ 
+  function openModal() {
+      document.getElementById('logoutModal').classList.add('is-active');
+  }
+
+ 
+  function closeModal() {
+      document.getElementById('logoutModal').classList.remove('is-active');
+  }
+
+  
+ async function logout() {
+  console.log('logout');
+     axios.get('/logout').then((response)=>{
+      if(response.data===true){
+        window.location.href="/"
+      }
+     }).catch((error)=>{
+      console.log(error);
+     })
+      console.log('Logout action');
+      closeModal(); 
+  }
+</script>

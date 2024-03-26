@@ -1,0 +1,242 @@
+<%- include("./partials/header.ejs")%>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<%- include("./partials/sidebar.ejs")%>
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <form action="/admin/addproduct" method="post" enctype="multipart/form-data" id="addproductform"  >
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Add New Product</h2>
+                            <div>
+                                <button class="btn btn-light rounded font-sm mr-5 text-body hover-up" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="product_title" class="form-label">Product title</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="formproductname" name="productname" />
+                                </div>
+                                <div class="row gx-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_sku" class="form-label">Cost</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="formcost" name="cost" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_color" class="form-label">Color</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="formcolor" name="color" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_size" class="form-label">Size</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="formsize" name="size"/>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_brand" class="form-label">Brand</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="formbrand" name="brand" />
+                                    <label for="product_brand" class="form-label">Quantity</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="formquantity" name="Quantity" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" rows="4" name="description" id="formdescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Images</label>
+                                    <input class="form-control" type="file"  
+                                    name="files" multiple id="image-input"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="image-preview"></div>
+                        <!-- card end// -->
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="form-label">Price</label>
+                                    <input type="text" placeholder="Type here" class="form-control" name ="price" id="formprice" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" name="visibility" id="formvisibility">
+                                        <option value="active">active</option>
+                                        <option value="inactive">inactive</option>
+                                    </select>
+                                </div>
+                                <hr />
+                                <h5 class="mb-3">Categories</h5>
+                                <select class="form-select" id="categorySelect" aria-label="Default select example">
+    
+                                    <% category.forEach(category => { %>
+                                        <option value="<%= category._id %>">
+                                          <%= category.categoryName %>
+                                        </option>
+                                        <% }); %>
+                                  </select>
+                            </div>
+                            <div id="errormessage" class="text-danger fw-bold p-3"></div>
+
+                        </div>
+                        <!-- card end// -->
+                    </div>
+                    
+                </div>
+            </section>
+        </form>
+    <%- include("./partials/footer.ejs")%>
+   
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+document.getElementById('image-input').addEventListener('change', function(event) {
+  const preview = document.getElementById('image-preview');
+  preview.innerHTML = '';
+
+  const files = event.target.files;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) { continue; }
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.style.width = '150px';
+    img.style.height = '150px';
+    img.style.objectFit = 'cover';
+    img.style.marginRight = '10px';
+    img.style.marginBottom = '10px';
+    preview.appendChild(img);
+  }
+});
+    </script>
+    <script>
+         const notyf = new Notyf({
+                            position: { x: 'right', y: 'top' },
+                            dismissible: true,
+                            duration: 2000,
+                                });
+                                
+    document.addEventListener('DOMContentLoaded', function () {
+        const addproductform = document.getElementById('addproductform');
+        addproductform.addEventListener('submit', function (event) {
+            event.preventDefault();
+    
+            const price = document.getElementById('formprice').value;
+            const cost = document.getElementById('formcost').value;
+            const description = document.getElementById('formdescription').value;
+            const brand = document.getElementById('formbrand').value;
+            const status = document.getElementById('formvisibility').value;
+            const productname = document.getElementById('formproductname').value;
+            const color = document.getElementById('formcolor').value;
+            const size = document.getElementById('formsize').value;
+            const files = document.getElementById('image-input').files;
+            const errormessage = document.getElementById('errormessage')
+            const categorySelect =document.getElementById('categorySelect').value;
+            const quantity =document.getElementById('formquantity').value
+            const formData = new FormData();
+    
+            formData.append('price', price);
+            formData.append('cost', cost);
+            formData.append('description', description);
+            formData.append('brand', brand);
+            formData.append('status', status);
+            formData.append('productname', productname);
+            formData.append('color', color);
+            formData.append('size', size);
+            formData.append('categories',categorySelect);
+            formData.append('quantity',quantity)
+    
+            // Append each file individually to FormData object
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+    
+            // Make POST request with Fetch API
+            fetch('/admin/addproduct', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+               if(data===true){
+                            
+                            
+                Toastify({
+                        text: `${productname} has been succesfully added  `,
+                        duration: 5000,
+                        destination: "/admin/products",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function(){} // Callback after click
+                        }).showToast();
+
+
+
+               }
+               if(data=='less'){
+                errormessage.textContent="4 files required!"
+                notyf.error('4 files required!');
+               }else if(data=='emptyfiles'){
+                errormessage.textContent="Files cant be empty"
+                notyf.error('Files cant be empty');
+               }else if(data ==='lowprice'){
+                errormessage.textContent="price cant be low compared to cost"
+                notyf.error('price cant be low compared to cost');
+               }else{
+                
+               
+                Toastify({
+                        text: data,
+                        duration: 5000,
+                        destination: "/admin/products",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #FFCC00, #FF9900)",
+                        },
+                        onClick: function(){} // Callback after click
+                        }).showToast();
+
+
+
+
+
+                
+               }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>

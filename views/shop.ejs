@@ -1,0 +1,212 @@
+<%- include("./header.ejs")%>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<%- include("./partials/navbar.ejs")%>
+<div class="hero">
+	<div class="container">
+		<div class="row justify-content-between">
+			<div class="col-lg-5">
+				<div class="intro-excerpt">
+					<h1><%if(catname){%><%=catname%><%}else{%>Shop<%}%></h1>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+		<div class="untree_co-section product-section before-footer-section" >
+		    <div class="container">
+				<div class="row d-flex justify-content-end">
+					<div class="col-4">
+					<div class="input-group mb-3 mx-5 ">
+					<input type="text" class="form-control " placeholder="Search..." oninput="searchProducts(this.value)">
+					<button class="btn btn-outline-secondary" type="button" id="button-addon2">
+					  <i class="bi bi-search"></i>
+					</button>
+				  </div>
+				</div>
+				</div>
+				<div  class="row mb-5 "> 
+					<div >
+						<div class="dropdown show">
+							<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" >
+							  category
+							</a>
+							
+							<div class="dropdown-menu " >
+								<%catData.forEach(i=>{%>
+							  <a class="dropdown-item" href="/rendercategory/<%=i._id%>"><%=i.categoryName%></a>
+							  <%})%>
+							</div>
+
+						  </div>
+						  <div class="dropdown show mx-5">
+							<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" >
+							  sort
+							</a>
+							
+							<div class="dropdown-menu" >
+								
+							  <a class="dropdown-item" href="/products/sort/A-Z">A-Z</a>
+							  <a class="dropdown-item" href="/products/sort/Z-A">Z-A</a>
+							  
+							  
+							</div>
+
+
+						  </div>
+						  <div class="dropdown show mx-5">
+							<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" >
+							  Filters
+							</a>
+							
+							<div class="dropdown-menu" >
+								
+							  <a class="dropdown-item" href="/products/sort/toprated">Top rated</a>
+							 
+							  
+							  
+							</div>
+							
+
+							
+						  </div>
+					</div>
+				</div>
+		      	<div class="row mt-5" id="reloadpart">
+					
+					<% productData.forEach(i=>{%>
+		      		<!-- Start Column 1 -->
+					<%if(i.status=='active'){%>
+					<div class="col-12 col-md-4 col-lg-3 mb-5">
+						<a class="product-item" id="productdetails" href="/productdetail/<%= i._id %>">
+							<img src="/multer/products/<%=i.image[0]%>" class="img-fluid product-thumbnail">
+							<h3 class="product-title"><%=i.productName%></h3>
+						  </a>
+						<div class="d-flex justify-content-around ">
+							<strong class="product-price"><%=i.price%>₹</strong>
+							
+							<%if(i.quantity<1){%><span class="text-danger fw-bold lead">No stock</span><%}else{%>
+							
+							<%if(wishlistData?.product?.includes(i._id)){%>
+								<span class="btn btn-close-white addTowishBtns"  data-id ='<%= i._id %>' data-name="<%= i.productName %>"><i class=" fa-solid fa-heart"></i></span>
+						    
+							<%}else{%>
+								<span class="btn btn-close-white addTowishBtns"  data-id ='<%= i._id %>' data-name="<%= i.productName %>"><i class="fa-sharp fa-regular fa-heart"></i></span>
+							<%}%>
+							<button class="btn btn-close-white addToCartBtns"  data-id ='<%= i._id %>' data-name="<%= i.productName %>">Add to cart</button>
+							<%}%>
+						</div>
+						
+					</div> 
+					<%}%>
+					<!-- End Column 1 -->
+					<%})%>
+					
+			</div>
+		    </div>
+		</div>
+
+
+		<%- include("./footer.ejs")%>
+		<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+		
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+	function searchProducts(value) {
+  console.log(value);
+  const reloadpart = document.getElementById('reloadpart');
+  fetch(`/search?searchKey=${value}`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.length == 0) {
+        reloadpart.innerHTML = `<div class='alert alert-primary mt-5'><strong>No products found !</strong></div>`;
+      } else {
+        reloadpart.innerHTML = '';
+        data.map((i) => {
+          const productHtml = `<div class="col-12 col-md-4 col-lg-3 mb-5">
+            <a class="product-item" id="productdetails" href="/productdetail/${i._id}">
+              <img src="/multer/products/${i.image[0]}" class="img-fluid product-thumbnail">
+              <h3 class="product-title">${i.productName}</h3>
+            </a>
+            <div class="d-flex justify-content-around ">
+              <strong class="product-price">${i.price}₹</strong>
+              ${
+                i.quantity < 1
+                  ? '<span class="text-danger fw-bold lead">No stock</span>'
+                  : `<span class="btn btn-close-white addTowishBtns" data-id='${i._id}' data-name="${i.productName}"><i class="fa-sharp fa-regular fa-heart"></i></span>
+                     <button class="btn btn-close-white addToCartBtns" data-id='${i._id}' data-name="${i.productName}">Add to cart</button>`
+              }
+            </div>
+          </div>`;
+          reloadpart.insertAdjacentHTML('beforeend', productHtml);
+        });
+      }
+    });
+}
+				
+				
+				
+	
+	document.addEventListener('DOMContentLoaded',function(){
+		const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        }
+    });
+	
+	
+	
+const addToCartBtns= Array.from(document.getElementsByClassName('addToCartBtns'));
+const wishListbtns = Array.from(document.getElementsByClassName('addTowishBtns'));
+	addToCartBtns.forEach(i => {
+		i.addEventListener("click", function () {
+		console.log('clicked')
+		const productid=this.getAttribute('data-id');
+		const productname =this.getAttribute('data-name');
+     	axios.get(`/addtocart/${productid}`)
+        .then((response) => {
+          console.log(response.data);
+		  if(response.data===("nosession")){
+			
+			notyf.error('You should be logged in to add items to the cart');
+		  }else{
+			notyf.success(`${productname} is added to your cart succesfully!`); 
+		  }
+        })
+        .catch((error) => {
+          console.error("Error adding item to cart:", error);
+        });
+    });
+	});
+
+	wishListbtns.forEach(i=>{
+		i.addEventListener('click',function(){
+			const productid =this.getAttribute('data-id');
+			const productname =this.getAttribute('data-name');
+			axios.post('/addtowishlist',{productid}).then((response)=>{
+				if(response.data==true){
+					notyf.success(`${productname} is added to your wishlist succesfully!`); 
+				}else if(response.data=='nosession'){
+					notyf.error(`You should be logged in to add items to the wishlist`)
+				}
+			}).catch((error)=>{
+				console.log(error.message)
+			})
+		})
+	})
+	
+})
+</script>
+<script>
+
+	
+</script>
+	</body>
+
+</html>

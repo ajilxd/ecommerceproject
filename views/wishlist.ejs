@@ -1,0 +1,102 @@
+<%- include("./header.ejs")%>
+<%- include("./partials/navbar.ejs")%>
+		<!-- Start Hero Section -->
+			<div class="hero">
+				<div class="container">
+					<div class="row justify-content-between">
+						<div class="col-lg-5">
+							<div class="intro-excerpt">
+								<h1>Wishlist</h1>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		<!-- End Hero Section -->
+
+		<div class="untree_co-section product-section before-footer-section">
+		    <div class="container">
+			
+		      	<div class="row">
+					<% wishlistData?.product?.forEach(i=>{%>
+		      		<!-- Start Column 1 -->
+					<div class="col-12 col-md-4 col-lg-3 mb-5">
+						<a class="product-item" id ="productdetails" href="/productdetail/<%= i?._id %>">
+							<img src="\multer\products\<%=i?.image[0]%>" class="img-fluid product-thumbnail">
+							<h3 class="product-title"><%=i?.productName%></h3>
+						</a>
+						<div class="d-flex justify-content-around ">
+							<strong class="product-price"><%=i?.price%>₹</strong>
+						    <span class="btn btn-close-white removeWishBtns"  data-id ='<%= i?._id %>' data-name="<%= i?.productName %>">Remove</span>
+							<button class="btn btn-close-white addToCartBtns"  data-id ='<%= i?._id %>' data-name="<%= i?.productName %>">Add to cart</button>
+						</div>
+					</div> 
+					<!-- End Column 1 -->
+					<%})%>
+		      	</div>
+		    </div>
+		</div>
+
+
+		<%- include("./footer.ejs")%>
+	</body>
+		<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+		
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded',function(){
+		const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        }
+    });
+	document.getElementById('productdetails').addEventListener('click',function(){
+		console.log(event.target.href);
+	})
+const addToCartBtns= Array.from(document.getElementsByClassName('addToCartBtns'));
+const wishListbtns = Array.from(document.getElementsByClassName('addTowishBtns'));
+	addToCartBtns.forEach(i => {
+		i.addEventListener("click", function () {
+		console.log('clicked')
+		const productid=this.getAttribute('data-id');
+		const productname =this.getAttribute('data-name');
+     	axios.get(`/addtocart/${productid}`)
+        .then((response) => {
+          console.log(response.data);
+		  if(response.data===("nosession")){
+			
+			notyf.error('You should be logged in to add items to the cart');
+		  }else{
+			notyf.success(`${productname} is added to your cart succesfully!`); 
+		  }
+        })
+        .catch((error) => {
+          console.error("Error adding item to cart:", error);
+        });
+    });
+	});
+	const removeWishBtns= document.querySelectorAll('.removeWishBtns')
+	removeWishBtns.forEach(i=>{
+		i.addEventListener('click',function(){
+			console.log('remove')
+			const productid =this.getAttribute('data-id');
+			const productname =this.getAttribute('data-name');
+			axios.post('/removewishlist',{productid}).then((response)=>{
+				if(response.data==true){
+					window.location.reload()
+				}
+			}).catch((error)=>{
+				console.log(error.message)
+			})
+		})
+	})
+})
+</script>
+	
+
+</html>

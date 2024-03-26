@@ -1,0 +1,118 @@
+<%- include("./partials/header.ejs")%>
+<%- include("./partials/sidebar.ejs")%>
+
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title fw-bold display-6">Offers</h2>
+                        <p class="lead fw-medium ">offer management</p>
+                    </div>
+                    <div>
+                        <a href="/admin/addoffer"><button class="btn  btn-success text-white   ">create new offer</button></a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    
+                    <!-- card-header end// -->
+               
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Banner</th>
+                                        <th>Name</th>
+                                        <th>Discount</th>
+                                        <th>Status</th>
+                                        <th>Description</th>
+                                        <th>Type</th>
+                                        <th>Since</th>
+                                        <th>ExpiryDate</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% offerData.forEach((i, index) => { %>
+                                        <tr>
+                                            <% const dateString = i.createdAt; %>
+                                            <% const dateObject = new Date(dateString); %>
+                                            <% const since = dateObject.toISOString().slice(0, 10); %>
+                                            <% const expStr =i.expirydate%>
+                                            <% const expiryDateObj = new Date(expStr)%>
+                                            <% const until =expiryDateObj.toISOString().slice(0, 10); %>
+                                            <td><%= index %></td>
+                                            <td> <img src="/multer/categories/<%=i.image%>" class="img-sm img-thumbnail" alt="Item" /></td>
+                                            <td><%= i?.name %></td>
+                                            <td><%= i?.discountpercentage %>%</td>
+                                            <td><%=i.status%></td>
+                                            <td><%= i?.description %></td>
+                                            <td><%= i?.type %></td>
+                                            <td><%=since%></td>
+                                            <td><%=until %></td>
+                                            <td class="p-3 "><a href="/admin/editoffer/<%=i._id%>"><button class="btn btn-warning btn-sm rounded-pill px-4 text-white"  >Edit</button></a></td>
+                                            <%if(i.status=='active'){%>
+                                            <td class="p-3 "><a ><button class="btn btn-danger btn-sm rounded-pill px-4 text-white removeofferbtns" data-id="<%=i?._id%>" data-type="<%=i?.type%>" data-name="<%=i?.name%>" 
+                                             >remove</button></a></td>
+                                            <%}else{%>
+                                            <td class="p-3 "><a ><button class="btn btn-success btn-sm rounded-pill px-4 text-white addofferbtns" data-id="<%=i?._id%>" data-type="<%=i?.type%>" data-name="<%=i?.name%>" 
+                                            >Add</button></a></td>    
+                                            <%}%>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- table-responsive//end -->
+                    </div>
+                    
+                </div>
+            </section>
+            <%- include("./partials/footer.ejs")%>
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+            <script>
+            document.addEventListener('DOMContentLoaded',function(){
+                const notyf = new Notyf({
+                            position: { x: 'right', y: 'top' },
+                            dismissible: true,
+                            duration: 2000,
+                        });
+                //remove offer
+                const removeofferbtns=document.querySelectorAll('.removeofferbtns');
+                removeofferbtns.forEach(i=>{
+                    i.addEventListener('click',function(){
+                        const offerid=this.getAttribute('data-id');
+                        const type=this.getAttribute('data-type');
+                        const name= this.getAttribute('data-name')
+                        console.log({offerid,type})
+                        axios.post(`/admin/removeoffer/${offerid}`,{type}).then((response)=>{
+                            if(response.data==true){
+                                notyf.success(`${name} is successfully deactivated`);
+                            }
+                        }).catch((error)=>{
+                            console.log('error');
+                        })
+                    })
+                })
+               //addoffer
+                const addofferbtns=document.querySelectorAll('.addofferbtns');
+                addofferbtns.forEach(i=>{
+                    i.addEventListener('click',function(){
+                        const offerid=this.getAttribute('data-id');
+                        const type=this.getAttribute('data-type');
+                        const name= this.getAttribute('data-name')
+                        console.log({offerid,type})
+                        axios.post(`/admin/addoffer/${offerid}`,{type}).then((response)=>{
+                            if(response.data==true){
+                                notyf.success(`${name} is successfully activated`);
+                            }
+                        }).catch((error)=>{
+                            console.log('error');
+                        })
+                    })
+                })
+            })
+            </script>

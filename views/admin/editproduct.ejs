@@ -1,0 +1,217 @@
+<%- include("partials/header.ejs")%>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<%- include("partials/sidebar.ejs")%>
+        <main class="main-wrap">
+            <%- include("partials/nav.ejs")%>
+            <form action="" method="post" enctype="multipart/form-data" id="editproductform"  >
+            <section class="content-main">
+                <%=productData.productName%>
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Edit product</h2>
+                            <div>
+                                <button class="btn btn-light rounded font-sm mr-5 text-body hover-up" type="submit">Save </button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="product_title" class="form-label">Product title</label>
+                                    <input type="text" value="<%=productData.productName%>" class="form-control" id="formproductname" name="productname" />
+                                </div>
+                                <div class="row gx-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_sku" class="form-label">Cost</label>
+                                        <input type="text" value="<%=productData.cost%>" class="form-control" id="formcost" name="cost" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_color" class="form-label">Color</label>
+                                        <input type="text" value="<%=productData.color%>" class="form-control" id="formcolor" name="color" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_size" class="form-label">Size</label>
+                                        <input type="text" value="<%=productData.size%>" class="form-control" id="formsize" name="size"/>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_brand" class="form-label">Brand</label>
+                                    <input type="text" value="<%=productData.brand%>" class="form-control" id="formbrand" name="brand" />
+                                    <label for="product_brand" class="form-label">Quantity</label>
+                                    <input type="text" value="<%=productData.quantity%>" class="form-control" id="formquantity" name="quantity" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Description</label>
+                                    <textarea value="<%=productData.description%>" class="form-control" rows="4" name="description" id="formdescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Images</label>
+                                    <input class="form-control" type="file"  
+                                    name="files" multiple id="formimages"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="form-label">Price</label>
+                                    <input type="text" placeholder="<%=productData.price%>" value="<%=productData.price%>" class="form-control" name ="price" id="formprice" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" name="visibility" id="formvisibility">
+                                        <option value="active">active</option>
+                                        <%if(productData.status==='inactive'){%>
+                                        <option value="inactive" selected>inactive</option>
+                                        <%}else{%>
+                                        <option value="inactive" >inactive</option>  
+                                        <%}%>
+                                    </select>
+                                </div>
+                                <hr />
+                                <h5 class="mb-3">Categories</h5>
+                                <select class="form-select" id="categorySelect" >
+    
+                                    <% category.forEach(category => { %>
+                                        <option value="<%= category._id %>">
+                                          <%= category.categoryName %>
+                                        </option>
+                                        <% }); %>
+                                  </select>
+                            </div>
+                            <div id="errormessage" class="text-danger"></div>
+
+                        </div>
+                        <!-- card end// -->
+                    </div>
+                    
+                </div>
+            </section>
+        </form>
+    <%- include("partials/footer.ejs")%>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editproductform = document.getElementById('editproductform');
+    
+        editproductform.addEventListener('submit', function (event) {
+            event.preventDefault();
+    
+            const price = document.getElementById('formprice').value;
+            const cost = document.getElementById('formcost').value;
+            const description = document.getElementById('formdescription').value;
+            const brand = document.getElementById('formbrand').value;
+            const status = document.getElementById('formvisibility').value;
+            const productname = document.getElementById('formproductname').value;
+            const color = document.getElementById('formcolor').value;
+            const size = document.getElementById('formsize').value;
+            const files = document.getElementById('formimages').files;
+            const errormessage = document.getElementById('errormessage')
+            const categorySelect =document.getElementById('categorySelect').value
+            const quantity =document.getElementById('formquantity').value
+            const formData = new FormData();
+    
+            formData.append('price', price);
+            formData.append('cost', cost);
+            formData.append('description', description);
+            formData.append('brand', brand);
+            formData.append('status', status);
+            formData.append('productname', productname);
+            formData.append('color', color);
+            formData.append('size', size);
+            formData.append('categories',categorySelect)
+            formData.append('quantity',quantity)
+    
+            // Append each file individually to FormData object
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+    
+            // Make POST request with Fetch API
+            fetch(`/admin/editproduct/${'<%=productData._id%>'}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(formData);
+               if(data===true){
+                            
+
+                Toastify({
+                        text: `${productname} has been updated succesfully  `,
+                        duration: 5000,
+                        destination: "/admin/products",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function(){} // Callback after click
+                        }).showToast();
+
+
+
+
+               }else{
+                
+                Toastify({
+                        text:data,
+                        duration: 5000,
+                        destination: "/admin/products",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function(){} // Callback after click
+                        }).showToast();
+
+
+
+
+
+
+
+
+
+
+
+
+
+               }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>

@@ -1,0 +1,427 @@
+<%- include("header.ejs")%>
+<link href="https://cdn.jsdelivr.net/npm/notyf@3/dist/notyf.min.css" rel="stylesheet">
+<%- include("partials/navbar.ejs")%>
+
+		<!-- Start Hero Section -->
+			<div class="hero">
+				<div class="container">
+					<div class="row justify-content-between">
+						<div class="col-lg-5">
+							<div class="intro-excerpt">
+								<h1>Checkout</h1>
+							</div>
+						</div>
+						<div class="col-lg-7">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- End Hero Section -->
+			
+		<div class="untree_co-section">
+		    <div class="container">
+		     
+		      <div class="row">
+		        <div class="col-md-6 mb-5 mb-md-0">
+		          <h2 class="h3 mb-3 text-black">Billing Details</h2>
+		          <div class="p-3 p-lg-5 border bg-white">
+		            <div class="form-group">
+						<div class="form-group row">
+							<div class="col-md-12">
+							  <label for="c_companyname" class="text-black">Country </label>
+							  <input type="text" class="form-control" id="fcountry" >
+							</div>
+						  </div>
+		            </div>
+		            <div class="form-group row">
+		              <div class="col-md-6">
+		                <label for="c_fname" class="text-black">State <span class="text-danger">*</span></label>
+		                <input type="text" class="form-control" id="fstate" >
+		              </div>
+		              <div class="col-md-6">
+		                <label for="c_lname" class="text-black">City <span class="text-danger">*</span></label>
+		                <input type="text" class="form-control" id="fcity" >
+		              </div>
+		            </div>
+
+
+		            <div class="form-group row">
+		              <div class="col-md-12">
+		                <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
+		                <input type="text" class="form-control" id="faddressline"  placeholder="Address line">
+		              </div>
+		            </div>
+
+		    
+
+		            <div class="form-group row">
+		             
+		              <div class="col-md-6">
+		                <label for="c_postal_zip" class="text-black">Posta / Zip <span class="text-danger">*</span></label>
+		                <input type="text" class="form-control" id="fzipcode" >
+		              </div>
+					  <div class="col-md-6">
+		                <label for="c_phone" class="text-black">Phone <span class="text-danger">*</span></label>
+		                <input type="text" class="form-control" id="fphone" name="c_phone" placeholder="Phone Number">
+		              </div>
+		            </div>
+
+					<div class="form-group row">
+						<div class="col-md-6">
+						  <label for="c_fname" class="text-black">Name <span class="text-danger">*</span></label>
+						  <input type="text" class="form-control" id="fname" >
+						</div>
+						<div class="col-md-6">
+						  <label for="c_lname" class="text-black">Type <span class="text-danger">*</span></label>
+						  <input type="text" class="form-control" id="ftype" >
+						</div>
+					  </div>
+
+		            <div class="col-12 d-flex justify-content-center mt-5 ">
+						<div class="col-4 ">
+							<div class="text-danger" id="addresserror" ></div>
+							<button class="btn btn-success" id="faddaddressbtn">Add address</button>
+						</div>
+					</div>
+
+
+					<div class="row mb-5 mt-5">
+						<div class="col-md-12">
+							<h2 class="h3 mb-3 text-black">Choose Address</h2>
+							
+							<% addressData.forEach(i => { %>
+							<label class="card col-5">
+								
+								<div>
+									<div class="card-header">
+										<p class="card-header-title" data-toggle="tooltip"  title="<%=i%>">
+											<%= i.type %>
+										</p>
+										<button class="card-header-icon" aria-label="more options">
+											<span class="icon">
+												<i class="fa-solid fa-house-chimney"></i>
+											</span>
+										</button>
+										<div class="text-end ">
+											<input type="radio" name="address" class="radio addressradio" value="<%= i._id %>">
+										</div>
+									</div>
+									
+								</div>
+								
+							</label>
+							<% }) %>
+						</div>
+					</div>
+
+
+		          </div>
+		        </div>
+		        <div class="col-md-6">
+
+		          <div class="row mb-5">
+		            <div class="col-md-12">
+		              <h2 class="h3 mb-3 text-black">Coupon Code</h2>
+		              <div class="p-3 p-lg-5 border bg-white">
+
+		                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+		                <div class="input-group w-75 couponcode-wrap dropdown">
+		                  <input type="text" class="form-control me-2  dropdown-toggle" id="c_code" placeholder="Coupon Code" data-bs-toggle="dropdown">
+						  <ul class="dropdown-menu">
+							
+							<%couponData.forEach(i=>{%>
+							
+							<%if(i.limit>0&&sumOfAllProducts>i.criteriaAmount){%>
+							<li><a class="dropdown-item" onclick="setInputValue(this)" data-code="<%=i.code%>" data-discount="<%=i.discountAmount%>" ><span class="fw-bold mx-5"><%=i.name%></span><span class="text-success "><%=i.code%></span></a></li>
+							<%}%>
+							<%})%>
+						  </ul>
+		                  <div class="input-group-append">
+		                    <button class="btn btn-black btn-sm" type="button" id="applycouponbtn" data-sum="<%=sumOfAllProducts%>" data-object="<%=couponData%>">Apply</button>
+							<button class="btn btn-danger btn-sm" type="button" id="removecouponbtn">Remove</button>
+		                  </div>
+		                </div>
+						<div id="couponMsg" class="text-success fw-bold"></div>
+		              </div>
+		            </div>
+		          </div>
+
+				  
+				
+		          <div class="row mb-5">
+		            <div class="col-md-12">
+		              <h2 class="h3 mb-3 text-black">Your Order</h2>
+		              <div class="p-3 p-lg-5 border bg-white">
+		                <table class="table site-block-order-table mb-5">
+		                  <thead>
+		                    <th>Product</th>
+		                    <th>Total</th>
+		                  </thead>
+		                  <tbody>
+						 <%cartData.forEach(i=>{%>
+		                    <tr>
+		                      <td><%=i.productId.productName%> <strong class="mx-2">x</strong><%=i.quantity%></td>
+		                      <td><%=i.totals%></td>
+		                    </tr>
+							<%})%>
+							<tr>
+								<td class="text-black font-weight-bold"><strong>Total discount</strong></td>
+		                      <td class="text-black font-weight-bold"><strong><span id="discountshower"></span></strong></td>
+							</tr>
+		                    <tr>
+		                      <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+		                      <td class="text-black font-weight-bold"><strong><span id="whendiscount"></span><span id="nodiscount"><%=sumOfAllProducts%></span></strong></td>
+		                    </tr>
+		                  </tbody>
+		                </table>
+
+		                <div class="border p-3 mb-3">
+		                  <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">Cash on delivery</a></h3>
+
+		                  <div class="collapse" id="collapsebank">
+		                    <div class="py-2">
+		                      <p class="mb-0">
+								<label class="checkbox">
+									<span style="display:block;"><strong>**Pay when you receive it!** </strong>Choose Cash on Delivery and pay in cash to the delivery person upon receiving your order.</span>
+
+								<input type="checkbox" class="mt-4 inputcheck" value="cod">
+								Cash on delivery</a>
+							  </label></p>
+		                    </div>
+		                  </div>
+		                </div>
+
+		                <div class="border p-3 mb-3">
+		                  <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsecheque" role="button" aria-expanded="false" aria-controls="collapsecheque">Cheque Payment</a></h3>
+
+		                  <div class="collapse" id="collapsecheque">
+		                    <div class="py-2">
+		                      <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
+							  <input type="checkbox" class="mt-4 inputcheck" value="online">
+								Pay online</a>
+		                    </div>
+		                  </div>
+		                </div>
+
+		                <div class="border p-3 mb-5">
+		                  <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsepaypal" role="button" aria-expanded="false" aria-controls="collapsepaypal">Paypal</a></h3>
+
+		                  <div class="collapse" id="collapsepaypal">
+		                    <div class="py-2">
+		                      <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
+		                    </div>
+		                  </div>
+		                </div>
+						<%if(sumOfAllProducts>0){%>
+		                <div class="form-group">
+		                  <button class="btn btn-black btn-lg py-3 btn-block" id="placeorder">Place Order</button>
+		                </div>
+						<%}%>
+		              </div>
+		            </div>
+		          </div>
+
+		        </div>
+		      </div>
+		      <!-- </form> -->
+		    </div>
+		  </div>
+
+		  <%- include("./partials/cartfooter.ejs")%>
+
+		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+		<script src="/js/bootstrap.bundle.min.js"></script>
+		<script src="/js/tiny-slider.js"></script>
+		<scrip src="/js/custom.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/notyf@3"></script>
+		<script>
+			window.addEventListener('load', function() {
+				document.getElementById('whendiscount').style.display="none";
+				document.getElementById('discountshower').style.display="none";
+				document.getElementById('nodiscount').style.display="flex";
+			});
+			 const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        }});
+
+
+		function setInputValue(element) {
+				const inputField = document.getElementById('c_code');
+				inputField.value = element.getAttribute('data-code');
+				const discount =element.getAttribute('data-discount');
+				inputField.setAttribute('data-activediscount',discount)
+			}
+
+		document.getElementById('applycouponbtn').addEventListener('click',function(){
+			document.getElementById('whendiscount').style.display="none";
+			document.getElementById('discountshower').style.display="none";
+			document.getElementById('nodiscount').style.display="flex";
+			const inputField = document.getElementById('c_code');
+			const discount =inputField.getAttribute('data-activediscount');
+			const sumOfAllProducts =this.getAttribute('data-sum');
+			const coupon=inputField.value;
+			axios.post('/cart/verifycoupon',{coupon}).then((response)=>{
+				if(response.data==='valid'){
+					document.getElementById('couponMsg').textContent=`${coupon} is applied.`
+					document.getElementById('whendiscount').style.display="flex";
+					document.getElementById('whendiscount').textContent=Number(sumOfAllProducts-discount );
+					document.getElementById('discountshower').style.display="flex";
+					document.getElementById('discountshower').textContent=discount ;
+					document.getElementById('nodiscount').style.display="none";
+				}else if(response.data==='invalid'){
+					document.getElementById('couponMsg').textContent="Invalid coupon"
+				}
+			}).catch((error)=>{
+				console.log(error.message);
+			})
+			
+		})
+
+
+		document.getElementById('removecouponbtn').addEventListener('click',function(){
+			document.getElementById('couponMsg').textContent='';
+			document.getElementById('whendiscount').style.display="none";
+			document.getElementById('nodiscount').style.display="flex";
+			document.getElementById('discountshower').style.display='none'
+			 document.getElementById('c_code').value=''
+
+		})
+
+
+			let isAddress=false;
+			let isPayment=false;
+			let paymenttype;
+			let addressId;
+			document.addEventListener('DOMContentLoaded',function(){
+				const addaddressbtn=document.getElementById('faddaddressbtn');
+				const addresserror=document.getElementById('addresserror');
+				addaddressbtn.addEventListener('click',function(){
+				const country = document.getElementById('fcountry').value;
+				const mobileno=document.getElementById('fphone').value;
+				const zipcode=document.getElementById('fzipcode').value;
+				const addressline=document.getElementById('faddressline').value;
+				const city=document.getElementById("fcity").value;
+				const state=document.getElementById("fstate").value;
+				const name=document.getElementById("fname").value;
+				const type=document.getElementById("ftype").value;
+				const formData={country,mobileno,zipcode,addressline,city,state,name,type}
+				axios.post('/addaddress',formData).then((response)=>{
+					if(response.data===true){
+						addresserror.textContent="address addedd succesfully";
+						window.location.reload();
+					}else{
+						addresserror.textContent=response.data;
+					}
+				}).catch((error)=>{console.log(error.message)});
+				})
+
+			   document.querySelectorAll('.addressradio').forEach(i=>{
+				i.addEventListener('click',function(){
+					isAddress=true;
+					addressId=this.value;
+					console.log(isAddress,addressId)
+
+				})
+			   })
+			   console.log(isAddress,addressId)
+			   document.querySelectorAll('.inputcheck').forEach(i=>{
+				i.addEventListener('click',function(){
+					
+					isPayment=true;
+					paymenttype=this.value;
+					console.log(isPayment,paymenttype);
+
+				})
+			   })
+			   })
+			   document.getElementById('placeorder').addEventListener('click',function(){
+				const couponcode=document.getElementById('c_code').value
+				if(isPayment&&paymenttype){
+					const formData={paymenttype,addressId,couponcode};
+					axios.post('/cart/placeorder',{formData})
+					.then((response)=>{
+						// console.log("new ueess",response);
+						if(response.data===true){
+							window.location.href='/cart/orderconfirm/'
+						}else{
+							// console.log("jasssspp..",response.data);
+							razerpayops(response.data);
+							
+						}
+						
+					}).catch(function(error){
+						console.log("error at place order submission",error.message);
+					})
+				}else{
+					notyf.error('select payment and address for placing order');
+				}
+			   })
+			//    razorpay payment
+			  function razerpayops(order){
+				var options = {
+						"key": "rzp_test_eTLqINNAiIdrCX", // Enter the Key ID generated from the Dashboard
+						"amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+						"currency": "INR",
+						"name": "Furni enterprises", //your business name
+						"description": "Transcation payment",
+						"order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+						handler: function (response){
+							
+							verifyPayment(response,order);
+						},
+						"prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+							"name": "Gaurav Kumar", //your customer's name
+							"email": "gaurav.kumar@example.com", 
+							"contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+						},
+						"notes": {
+							"address": "Razorpay Corporate Office"
+						},
+						"theme": {
+							"color": "#3399cc"
+						}
+					};
+					console.log('options',options)
+
+					var rzp1 = new Razorpay(options);
+					
+rzp1.on('payment.failed', function (response){
+        // alert(response.error.code);
+        // alert(response.error.description);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
+        // alert(response.error.metadata.order_id);
+        // alert(response.error.metadata.payment_id);
+		notyf.error('Payment failture! go to order history for redo the payment');
+		window.location.reload();
+});
+
+rzp1.open();
+// document.getElementById('placeorder').onclick = function(e){
+//     rzp1.open();
+//     e.preventDefault();
+// }
+
+			   }
+			   function verifyPayment(payment,order){
+				axios.post('/verifypayment',{payment,order}).then((response)=>{
+					console.log(response.data);
+					if(response.data=='paymentsuccess'){
+						window.location.href='/cart/orderconfirm/'
+					}
+				}).catch((error)=>{
+					console.log(error.message);
+				})
+				
+			   }
+
+		</script>			
+			
+	</body>
+
+</html>

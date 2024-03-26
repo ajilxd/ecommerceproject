@@ -1,0 +1,61 @@
+<%- include("./partials/header.ejs")%>
+<%- include("./partials/sidebar.ejs")%>
+
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title fw-bold display-6">Coupons</h2>
+                        <p class="lead fw-medium ">coupon management</p>
+                    </div>
+                    <div>
+                        <a href="/admin/addcoupon"><button class="btn  btn-success text-white   ">Create new coupon</button></a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    
+                    <!-- card-header end// -->
+                 
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Code</th>
+                                        <th>Discount</th>
+                                        <th>Eligibleamount</th>
+                                        <th>status</th>
+                                        <th>Count</th>
+                                        <th>expiry</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% couponData.forEach((i, index) => { %>
+                                        <tr>
+                                            <td><%= index %></td>
+                                            <td><%= i.name %></td>
+                                            <td><%= i.code %></td>
+                                            <td><%= i.discountAmount %></td>
+                                            <td><%= i.criteriaAmount %></td>
+                                            <td><%= i.status %></td>
+                                            <td>1</td>
+                                            <td><%= i.expiryDate %></td>
+                                            <td><a href="/admin/editcoupon/<%=i._id%>"><button class="btn btn-warning btn-sm rounded-pill px-4 text-white"  >Edit</button></a></td>
+                                            <!-- data-bs-toggle="modal" data-bs-target="#editcategory" data-category-id="<%= i.id %>" data-category-name="<%= i.categoryName %>" data-category-description="<%= i.description %>" data-category-status="<%= i.status %>">
+                                                        Edit -->
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- table-responsive//end -->
+                    </div>
+                    
+                </div>
+            </section>
+            <%- include("./partials/footer.ejs")%>
+        

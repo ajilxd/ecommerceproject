@@ -1,0 +1,256 @@
+<%- include("./partials/header.ejs")%>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<%- include("./partials/sidebar.ejs")%>
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            
+            <% const expStr =offerdata.expirydate%>
+            <% const expiryDateObj = new Date(expStr)%>
+            <% const until =expiryDateObj.toISOString().slice(0, 10); %>
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Add Offer</h2>
+                            <div>
+                                <button class="btn btn-light rounded font-sm mr-5 text-body hover-up"  id="offersubmitbtn" type="button" data-id="<%=offerdata._id%>" >Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="product_title" class="form-label">Offer name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="offername" value="<%=offerdata.name%>"/>
+                                </div>
+                                <div class="row gx-3">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select" id="offercategory" >
+                                        <option value="active">active</option>
+                                        <option value="inactive">inactive</option>
+                                    </select>
+                                    <div class="d-flex justify-content-between mt-3">
+                                    <div class="col-md-5 mb-4">
+                                        <label for="product_color" class="form-label">Discount percentage</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="offerdiscountperecentage"  value="<%=offerdata.discountpercentage%>"/>
+                                    </div>
+                                    <div class="col-md-5 mb-4">
+                                        <label class="form-label">Expiry Date</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id ="offerexpirydate" value="<%=until%>"/>
+                                    </div>
+                                </div>
+                                    <div class=" col-md-10 mb-10">
+                                        <label class="form-label " >Category description</label>
+                                       <textarea  id="offerdescription" cols="60" rows="3" placeholder="<%=offerdata.description%>"></textarea>
+                                    </div>
+                                   
+                                </div>
+                                 
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="offerstatus" >
+                                        <option value="active">active</option>
+                                        <option value="inactive">inactive</option>
+                                    </select>
+                                    <label class="form-label">Upload banner</label>
+                                    <input class="form-control" type="file"  
+                                    name="files"  id="image-input"/>
+                                   
+                                </div>
+                                <hr />
+                              
+                              
+                            </div>
+                            <div id="errormessage" class="text-danger fw-bold p-3"></div>
+
+                        </div>
+                        <!-- card end// -->
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label class="form-label fw-bolder ">Image preview</label>
+                            <div class="card col-10" style="width:500px;height:500px">
+                            <img src="/multer/categories/<%=offerdata.image%>" alt="" class="img-thumbnail "></div>
+                        </div>
+                    </div> 
+                </div>
+            </section>
+       
+        <!-- Modal -->
+<div class="modal fade" id="croppedModal" tabindex="-1" role="dialog" aria-labelledby="croppedModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="croppedModalLabel">Crop Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img src="" id="croppedImage" alt="Cropped Image">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" id="cropButton">Crop</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <%- include("./partials/footer.ejs")%>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+   
+<script>
+ 
+document.addEventListener('DOMContentLoaded',function(){
+const imageInput = document.getElementById('image-input');
+const croppedImage = document.getElementById('croppedImage');
+const croppedModal = document.getElementById('croppedModal');
+const cropButton = document.getElementById('cropButton');
+let croppedImageData;
+let cropper;
+
+
+imageInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    croppedImage.src = reader.result;
+    croppedModal.classList.add('show');
+    croppedModal.style.display = 'block';
+
+    if (cropper) {
+      cropper.destroy();
+    }
+
+    cropper = new Cropper(croppedImage, {
+      aspectRatio: 16 / 9, // Set the desired aspect ratio for the cropped image
+      viewMode: 2,
+      guides: true,
+      autoCropArea: 0.8,
+      movable: true,
+      zoomable: true,
+      rotatable: true,
+      scalable: true
+    });
+  };
+
+
+// Close the modal when the "Close Modal" button is clicked
+cropButton.addEventListener('click', () => {
+  const croppedCanvas = cropper.getCroppedCanvas();
+  croppedImageData = croppedCanvas.toDataURL('image/jpeg');
+
+  // Update the preview image with the cropped image
+  const previewImage = document.querySelector('.img-thumbnail');
+  previewImage.src = croppedImageData;
+  // Get the modal element
+  const modalElement = document.getElementById('croppedModal');
+    console.log(modalElement)
+    croppedModal.classList.remove('show');
+    croppedModal.style.display = 'none';
+  // Get the modal instance
+  const modal = new bootstrap.Modal(modalElement);
+
+  // Close the modal when the "Crop" button is clicked
+  modal.hide();
+});
+
+ 
+  reader.readAsDataURL(file);
+});
+
+
+function dataURItoBlob(dataURI) {
+  const byteString = atob(dataURI.split(',')[1]);
+  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: mimeString });
+}
+
+
+
+document.getElementById('offersubmitbtn').addEventListener('click',function(){
+    console.log('hii');
+   const name = document.getElementById('offername').value;
+   const status =document.getElementById('offerstatus').value;
+   const discountperecentage =document.getElementById('offerdiscountperecentage').value;
+   const expirydate =document.getElementById('offerexpirydate').value;
+   const description = document.getElementById('offerdescription').value;
+   const category = document.getElementById('offercategory').value
+   const image = document.getElementById('image-input').files[0];
+   const data={name,status,discountperecentage,expirydate,description,category,image};
+   const croppedImageBlob = dataURItoBlob(croppedImageData);
+   const offerid=document.getElementById('offersubmitbtn').getAttribute('data-id');
+   const formData = new FormData();
+    formData.append('name', name);
+    formData.append('status', status);
+    formData.append('discountpercentage', discountperecentage);
+    formData.append('expirydate', expirydate);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('image',  croppedImageBlob);
+    formData.append('offerid',offerid);
+    console.log(formData);
+    axios.post('/admin/editoffer', formData, {
+    headers: {
+        'Content-type': "multipart/form-data"
+    }
+    }).then((response) => {
+       if(response.data==true){
+        Toastify({
+                        text: `${name} has been succesfully added to offers  `,
+                        duration: 5000,
+                        destination: "/admin/products",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function(){} // Callback after click
+                        }).showToast();
+       }else{
+        Toastify({
+                        text:response.data,
+                        duration: 5000,
+                        destination: "/admin/products",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function(){} // Callback after click
+                        }).showToast();
+       }
+    }).catch((err) => {
+        console.log('error', err);
+    });
+});
+})
+   </script>
+    
+    

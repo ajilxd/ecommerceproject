@@ -1,0 +1,248 @@
+
+
+<%- include("./header.ejs")%>
+
+<%- include("./partials/navbar.ejs")%>
+
+
+		<!-- Start Hero Section -->
+			<div class="hero">
+				<div class="container">
+					<div class="row justify-content-between">
+						<div class="col-lg-5">
+							<div class="intro-excerpt">
+								<h1>Cart</h1>
+							</div>
+						</div>
+						<div class="col-lg-7">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- End Hero Section -->
+
+		<%if(cartData.length>0){%>
+    
+		<div class="untree_co-section before-footer-section  " >
+            <div class="container" id="">
+              <div class="row mb-5">
+                  <div class="site-blocks-table" >
+                    <table class="table" >
+                      <thead>
+                        <tr>
+                          <th class="product-thumbnail">Image</th>
+                          <th class="product-name">Product</th>
+                          <th class="product-price">Price</th>
+                          <th class="product-quantity">Quantity</th>
+                          <th class="product-total">Total</th>
+                          <th class="product-remove">Remove</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <%cartData.forEach((i,index)=>{%>
+                        <tr id="reloadDiv">
+                          <td class="product-thumbnail">
+                            <img src='/multer/products/<%= i.productId.image[0] %>' alt="Image" style="height:100px" class="img-fluid">
+                          </td>
+                          <td class="product-name">
+                            <h2 class="h5 text-black"><%=i.productId.productName%></h2>
+                          </td>
+                          <td><%=i.productId.price%></td>
+                          <td>
+                           
+                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                              <div class="input-group-prepend">
+                                <button class="btn btn-outline-black decrease" type="button" data-id="<%=i._id%>" data-price="<%=i.productId.price%>">&minus;</button>
+                              </div>
+                              <input type="text" class="form-control text-center quantity-amount" value="<%=i.quantity%>" id="count<%= index %>" />
+                              
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-black increase" type="button" data-id="<%= i._id %>" data-price="<%= i.productId.price %>" >&plus;</button>
+                            </div>
+                          
+                            </div>
+        
+                          </td>
+                        
+                          <td class="itemtotals" id="itemtotals<%=index%>" ><%=i.totals%></td>
+                          <td><button class="btn btn-black btn-sm removebtns" data-id="<%=i._id%>">remove</button>  <div id="errordiv" class="text-danger"></div></td>
+                        </tr>
+                        <%})%>
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+        
+              <div class="row mt-5 pt-5">
+                <div class="col-md-6">
+                  <div class="row mb-5">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                      <button class="btn btn-black btn-sm btn-block">Update Cart</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
+                    </div>
+                  </div>
+                 
+                </div>
+                <div class="col-md-6 pl-5">
+                  <div class="row justify-content-end">
+                    <div class="col-md-7">
+                      <div class="row">
+                        <div class="col-md-12 text-right border-bottom mb-5">
+                          <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <span class="text-black">Total</span>
+                        </div>
+                        <div class="col-md-6 text-right">
+                          <strong class="text-black" id="SumOfAllProducts">00.00</strong>
+                        </div>
+                      </div>
+                     
+        
+                      <div class="row">
+                        <div class="col-md-12">
+                          <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='/cart/checkout'">Proceed To Checkout</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <%}else{%>
+            <div style="height:600px">
+            <div class="text-center  ">
+            <img src="images/emptycart.png" style="height:600px">
+            <div>
+           <a href="/shop"> <button class="btn btn-primary btn-lg">Shop</button></a>
+          </div>
+          </div>
+        </div>
+            <%}%>
+		  <%- include("./partials/cartfooter.ejs")%>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		  <script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3"></script>
+    <script>
+      const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        }});
+        const customOptions = {
+          type: 'error',
+          'background-color': '#e54141', 
+          message: 'product removed from cart!',
+          duration: 2000,
+          ripple: true,
+          position: { x: 'right', y: 'top' },
+          dismissible: true,
+          className: 'custom-notification'
+};
+
+
+      let sum=0;
+      prices=document.querySelectorAll('.itemtotals');
+      prices.forEach(i=>{
+      sum +=Number(i.textContent);
+      })
+      document.getElementById('SumOfAllProducts').textContent=sum;
+    
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const incrementButtons = document.querySelectorAll('.increase');
+        incrementButtons.forEach((button, index) => {
+          let count = document.getElementById(`count${index}`);
+          button.addEventListener('click',async function() {
+            console.log('Increment clicked');
+           const unitprice = this.getAttribute('data-price');
+           const cartId = this.getAttribute('data-id');
+           console.log(unitprice);
+           console.log(cartId);
+            if (Number(count.value) < 10) {
+              count.value = Number(count.value) + 1;
+              document.getElementById(`itemtotals${index}`).textContent=Number(count.value)*unitprice;
+              document.getElementById('SumOfAllProducts').textContent= Number(document.getElementById('SumOfAllProducts').textContent)+Number(unitprice);
+            }
+            const quantity=count.value;
+            axios.post(`/cart/quantitychange/${cartId}`,{quantity}).then((response)=>{
+              if(response.data==true){
+                console.log('increment....');
+              }else if(response.data=='nostock'){
+                notyf.error('Selcted product exceeded the stock quantity')
+                document.getElementById('errordiv').textContent="Out of stock"
+                setTimeout(function(){
+                  window.location.reload();
+                },3000)
+              
+              }
+            }).catch((error)=>{
+              console.log(error.message);
+            })
+          });
+        });
+    
+        const decrementButtons = document.querySelectorAll('.decrease');
+        decrementButtons.forEach((button, index) => {
+          let count = document.getElementById(`count${index}`);
+          button.addEventListener('click', async function() {
+            console.log('Decrement clicked');
+            const unitprice = this.getAttribute('data-price');
+            const cartId = this.getAttribute('data-id');
+            console.log(cartId);
+            if (Number(count.value) > 1) {
+              count.value = Number(count.value) - 1;
+              document.getElementById(`itemtotals${index}`).textContent=Number(count.value)*unitprice;
+              document.getElementById('SumOfAllProducts').textContent= Number(document.getElementById('SumOfAllProducts').textContent)-Number(unitprice);
+            }
+            const quantity=count.value;
+            console.log(quantity);
+             axios.post(`/cart/quantitychange/${cartId}`,{quantity}).then((response)=>{
+              if(response.data==true){
+                console.log('decrement');
+              }
+            }).catch((error)=>{
+              console.log(error.message);
+            })
+          });
+        });
+
+        const removebtns=document.querySelectorAll('.removebtns');
+        console.log(removebtns);
+        removebtns.forEach(i=>{
+          i.addEventListener('click', function(){
+            console.log('remove');
+            const cartid=this.getAttribute('data-id');
+            axios.post(`/cart/removecart/${cartid}`).then(()=>{
+              console.log('product removed');
+            }).catch((error)=>{
+              console.log(error.message);
+            })
+            
+          
+            
+           
+           location.reload();
+
+          })
+        
+        })
+      
+
+      });
+    </script>
+    
+
+
+	</body>
+
+</html>

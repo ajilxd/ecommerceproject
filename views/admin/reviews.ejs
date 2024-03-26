@@ -1,0 +1,94 @@
+<%- include("./partials/header.ejs")%>
+<%- include("./partials/sidebar.ejs")%>
+
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Reviewss</h2>
+                        <p>Review management</p>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search by name" class="form-control bg-white" />
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    
+                 
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Product</th>
+                                        <th>Rating</th>
+                                        <th>Comments</th>
+                                        <th>Date</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 <%reviewData.forEach((i,index)=>{%>
+                                    <tr>
+                                        <%date =i.createdAt.toISOString().split('T')[0]; %>
+                                        <td><%=index%></td>
+                                        <td><b><%=i.userId?.name%></b></td>
+                                        <td><%=i.productId?.productName%></td>
+                                        <td>
+                                            <%=i.rating%>
+                                        </td>
+                                        <td><%=i.review%></td>
+                                        <td><%=date%></td>
+                                        <td class="text-end">
+                                           
+                                                 
+                                        </td>
+                                    </tr>
+                                    <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- table-responsive//end -->
+                    </div>
+                    <!-- card-body end// -->
+                </div>
+            </section>
+            <%- include("./partials/footer.ejs")%>
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+            <script>
+              const blockbuttons=  document.querySelectorAll( '.blockbuttons');
+              let userId;
+              blockbuttons.forEach(i=>{
+                i.addEventListener('click',function(){
+                    userId=this.getAttribute('data-id');
+                    axios.post(`/admin/blockuser/${userId}`).then((response)=>{
+                        if(response.data===true){
+                            console.log('user is blocked');
+                            window.location.reload();
+                        }
+                    }).catch((error)=>{
+                        console.log(error.message);
+                    })
+                })
+              })
+              
+              const unblockbuttons = document.querySelectorAll('.unblockbuttons')
+              unblockbuttons.forEach(i=>{
+                i.addEventListener('click',function(){
+                    userId=this.getAttribute('data-id');
+                    axios.post(`/admin/unblockuser/${userId}`).then((response)=>{
+                        if(response.data===true){
+                            console.log('user is unblocked');
+                            window.location.reload();
+                        }
+                    }).catch((error)=>{
+                        console.log(error.message);
+                    })
+                })
+              })
+            </script>
+          

@@ -1,0 +1,147 @@
+<%- include("./partials/header.ejs")%>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<%- include("./partials/sidebar.ejs")%>
+
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <form  method="post" id="editcouponform" >
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Edit  Coupon</h2>
+                            <div>
+                                <button class="btn btn-light rounded font-sm mr-5 text-body hover-up" id="editCouponSubmitbtn" type="submit" data-id="<%=couponData._id%>">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="product_title" class="form-label">Coupon name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" value="<%=couponData.name%>" id="editcouponname"  />
+                                </div>
+                                <div class="row gx-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_sku" class="form-label">Code</label>
+                                        <input type="text" placeholder="Type here" class="form-control" value="<%=couponData.code%>" id="editcouponcode" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_color" class="form-label">Discount amount</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="editcoupondiscountamount" value="<%=couponData.discountAmount%>" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_size" class="form-label">Criteria amount</label>
+                                        <input type="text" placeholder="Type here" class="form-control"  id="editcouponcriteriaamount" value="<%=couponData.criteriaAmount%>"/>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_brand" class="form-label">Limit</label>
+                                    <input type="text" placeholder="Type here" class="form-control"  id="editcouponlimit" value="<%=couponData.limit%>" />
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id ="editcouponexpiryDate" value="<%=couponData.expiryDate.toISOString().split('T')[0]%>" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="editcouponstatus" >
+                                        <option value="active">active</option>
+                                        <option value="inactive">inactive</option>
+                                    </select>
+                                </div>
+                                <hr />
+                              
+                              
+                            </div>
+                            <div id="errormessage" class="text-danger fw-bold p-3"></div>
+
+                        </div>
+                       
+                        <!-- card end// -->
+                    </div>
+                    
+                </div>
+            </section>
+        </form>
+    <%- include("./partials/footer.ejs")%>
+   
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Welcome to add coupon page");
+            const notyf = new Notyf({
+                position: { x: 'right', y: 'top' },
+                dismissible: true,
+                duration: 2000,
+            });
+    
+            document.getElementById('editcouponform').addEventListener('submit', function (event) {
+                event.preventDefault();
+                const name = document.getElementById('editcouponname').value;
+                const code = document.getElementById('editcouponcode').value;
+                const status = document.getElementById('editcouponstatus').value;
+                const limit = document.getElementById('editcouponlimit').value;
+                const expiryDate = document.getElementById('editcouponexpiryDate').value;
+                const discountAmount = document.getElementById('editcoupondiscountamount').value;
+                const criteriaAmount = document.getElementById('editcouponcriteriaamount').value;
+                const couponId=document.getElementById('editCouponSubmitbtn').getAttribute('data-id');
+                console.log(couponId);
+                const formData = { name, code, status, limit, expiryDate, discountAmount, criteriaAmount };
+    
+                console.log(formData);
+                axios.post(`/admin/editcoupon/${couponId}`, formData)
+                    .then(response => {
+                        console.log(response.data);
+                        if (response.data === true) {
+                            Toastify({
+                                text: "Coupon edited successfully",
+                                duration: 5000,
+                                destination: "/admin/coupons",
+                                newWindow: true,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                stopOnFocus: true,
+                                style: {
+                                    background: "linear-gradient(to right, #FFCC00, #FF9900)",
+                                },
+                                onClick: function(){} // Callback after click
+                            }).showToast();
+                        }else{
+                            Toastify({
+                                text: response.data,
+                                duration: 5000,
+                                destination: "/admin/coupons",
+                                newWindow: true,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                stopOnFocus: true,
+                                style: {
+                                    background: "linear-gradient(to right, #FFCC00, #FF9900)",
+                                },
+                                onClick: function(){} // Callback after click
+                            }).showToast();
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        });
+    </script>
+    
+    

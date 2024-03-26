@@ -1,0 +1,62 @@
+            <%- include("./partials/header.ejs")%>
+            <%- include("./partials/sidebar.ejs")%>
+            <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Products List</h2>
+                    </div>
+                    <div>
+                        <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                   
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <div class="card-body">
+                            <% productData.forEach(i => { %>
+                               <article class="itemlist">
+                                    <% const dateString = i.createdAt; %>
+                                    <% const dateObject = new Date(dateString); %>
+                                    <% const formattedDate = dateObject.toISOString().slice(0, 10); %>
+                        
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-3 col-md-4 col-sm-6 col-12 col-name">
+                                            <a class="itemside" href="#">
+                                                <div class="left">
+                                                    <img src="/multer/products/<%=i.image[0]%>" class="img-sm img-thumbnail" alt="Item" />
+                                                </div>
+                                                <div class="info">
+                                                    <h6 class="mb-0"><%= i.productName %></h6>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-3 col-6 col-price">
+                                            <span><%= i.price %>₹</span>
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-3 col-6 col-status">
+                                            <span class="badge rounded-pill alert-success"><%= i.status %></span>
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-3 col-6 col-date">
+                                            <span class="d-block"><%= formattedDate %></span>
+                                        </div>
+                                        <div class="col-lg-3 col-md-2 col-sm-3 col-6 col-action text-end">
+                                            <a href="/admin/editproduct/<%=i._id%>"><button class="btn btn-sm font-sm rounded btn-warning editbuttons " id="editbtn" data-id="<%=i._id%>" ><i class="material-icons md-edit"></i><span> Edit </span></button></a>
+                                            <button class="btn btn-sm font-sm rounded btn-danger deletebuttons " id="deletebtn" data-id="<%=i._id%>" ><i class="material-icons md-edit"></i><span> Delete </span></button>
+                                        </div>
+                                    </div>
+                                </article>
+                                <% }); %>
+                            <!-- itemlist  .// -->
+                        </div>
+                        <!-- card-body end// -->
+                        
+                        <!-- itemlist  .// -->
+                    </div>
+                    <!-- card-body end// -->
+             
+            </section>
+            <%- include("./partials/footer.ejs")%>
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

@@ -1,0 +1,139 @@
+<%- include("./partials/header.ejs")%>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<%- include("./partials/sidebar.ejs")%>
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <form action="/admin/coupons" method="post" id="addcouponform" >
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Add Coupon</h2>
+                            <div>
+                                <button class="btn btn-light rounded font-sm mr-5 text-body hover-up" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="product_title" class="form-label">Coupon name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="name" />
+                                </div>
+                                <div class="row gx-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_sku" class="form-label">Code</label>
+                                        <input type="text" placeholder="Type here" class="form-control"  id="code" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_color" class="form-label">Discount amount</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="discountAmount" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="product_size" class="form-label">Criteria amount</label>
+                                        <input type="text" placeholder="Type here" class="form-control"  id="criteriaAmount"/>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_brand" class="form-label">Limit</label>
+                                    <input type="text" placeholder="Type here" class="form-control"  id="limit" />
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id ="expiryDate" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="status" >
+                                        <option value="active">active</option>
+                                        <option value="inactive">inactive</option>
+                                    </select>
+                                </div>
+                                <hr />
+                              
+                              
+                            </div>
+                            <div id="errormessage" class="text-danger fw-bold p-3"></div>
+
+                        </div>
+                        <!-- card end// -->
+                    </div>
+                    
+                </div>
+            </section>
+        </form>
+    <%- include("./partials/footer.ejs")%>
+   
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Welcome to add coupon page");
+            const notyf = new Notyf({
+                position: { x: 'right', y: 'top' },
+                dismissible: true,
+                duration: 2000,
+            });
+    
+            document.getElementById('addcouponform').addEventListener('submit', function (event) {
+                event.preventDefault();
+                const name = document.getElementById('name').value;
+                const code = document.getElementById('code').value;
+                const status = document.getElementById('status').value;
+                const limit = document.getElementById('limit').value;
+                const expiryDate = document.getElementById('expiryDate').value;
+                const discountAmount = document.getElementById('discountAmount').value;
+                const criteriaAmount = document.getElementById('criteriaAmount').value;
+                const formData = { name, code, status, limit, expiryDate, discountAmount, criteriaAmount };
+    
+                console.log(formData);
+                axios.post('/admin/addcoupon', formData)
+                    .then(response => {
+                        console.log(response.data);
+                        if (response.data === true) {
+                            Toastify({
+                                text: "Coupon added successfully",
+                                duration: 5000,
+                                newWindow: true,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                stopOnFocus: true,
+                                style: {
+                                    background: "linear-gradient(to right, #FFCC00, #FF9900)",
+                                },
+                            }).showToast();
+                        }else{
+                            Toastify({
+                                text: response.data,
+                                duration: 5000,
+                                newWindow: true,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                stopOnFocus: true,
+                                style: {
+                                    background: "linear-gradient(to right, #FFCC00, #FF9900)",
+                                },
+                            }).showToast(); 
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        });
+    </script>
+    
+    

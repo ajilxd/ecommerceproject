@@ -1,0 +1,65 @@
+<%- include("./header.ejs")%>
+<%- include("./partials/navbar.ejs")%>
+<div class="container is-flex is-align-items-center is-justify-content-center" style="height: 600px;">
+  <form class="box col-6" id="registerform">
+    <div><h3 class="text-center is-size-4 has-text-weight-semibold has-text-black">Register</h3></div>
+    <div class="field">
+      <label class="label">User name</label>
+      <div class="control">
+        <input class="input shadow-none" type="text" placeholder="e.g. alex" name="username" id="formusername">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Email</label>
+      <div class="control">
+        <input class="input shadow-none" type="text" placeholder="e.g. alex@gmail.com" name="email" id="formemail">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Password</label>
+      <div class="control">
+        <input class="input shadow-none" type="password" placeholder="********" name="password" id="formpassword">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Retype Password</label>
+      <div class="control">
+        <input class="input shadow-none" type="password" placeholder="********" name="Retypepassword" id="formretypepassword">
+      </div>
+    </div>
+    <label class="text-danger is-size-6 has-text-centered has-text-weight-semibold is-block" id="errormessage"></label>
+    <button class="button is-primary my-3">Sign in</button>
+  </form>
+</div>
+
+<%- include("./footer.ejs")%>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const usernamebtn=document.getElementById('formusername')
+    const emailbtn=document.getElementById('formemail')
+    const passwordbtn=document.getElementById('formpassword')
+    const retypepasswordbtn=document.getElementById('formretypepassword')
+    const registerForm = document.getElementById('registerform');
+    const errorlabel =document.getElementById('errormessage')
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      axios.post('/register',{username:usernamebtn.value,email:emailbtn.value,password:passwordbtn.value,retypepassword:retypepasswordbtn.value})
+      .then((response)=>{
+        console.log(response.data);
+        if(response.data!==true){
+        errorlabel.textContent=response.data;
+        }else{
+          window.location.href="/otp";
+        }
+      }).catch((error)=>{
+        console.log(error.message);
+      })
+    });
+  });
+</script>

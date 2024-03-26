@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orders Dashboard</title>
+<style>
+    /* Add your CSS styles here */
+</style>
+</head>
+<body>
+
+<%- include("./partials/header.ejs")%>
+<%- include("./partials/sidebar.ejs")%>
+
+<main class="main-wrap">
+    <%- include("./partials/nav.ejs")%>
+    <section class="content-main">
+        <div class="d-flex justify-content-end">
+        <button id="generatePDF" class="btn btn-sm btn-success mx-4 text-white">Generate PDF</button>
+        <button id="generateExcel"  class="btn btn-sm btn-success text-white" >Generate Excel</button>
+         </div>
+        <div class="content-header">
+            <div>
+                <h2 class="h4 fw-bold">Sales report</h2>
+                <p>Sales report management</p>
+            </div>
+          
+            <div>
+                <input type="text" placeholder="Search by name" class="form-control bg-white" />
+            </div>
+        </div>
+        <div class="card mb-4" >
+            <header class="card-header">
+                <div class="d-flex">
+                    <button class="tablink btn btn-light mx-3" onclick="openTab(event, 'all')">All</button>
+                    <button class="tablink btn btn-light mx-3" onclick="openTab(event, 'daily')">Daily</button>
+                    <button class="tablink btn btn-light mx-3" onclick="openTab(event, 'weekly')">Weekly</button>
+                    <button class="tablink btn btn-light mx-3" onclick="openTab(event, 'monthly')">Monthly</button>
+                    <button class="tablink btn btn-light mx-3" onclick="openTab(event, 'yearly')">Yearly</button>
+                </div>
+            </header>
+            <div id="fulldata">
+                
+                    <div id="all" class="tab-content">
+                        <!-- All Orders Content -->
+                        <h3 class="h3 text-link">All orders</h3>
+                        
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th>#OrderId</th>
+                                            <th>Name</th>
+                                            <th>price</th>
+                                            <th>coupon</th>
+                                            <th>offers</th>
+                                            <th>Total Discount</th>
+                                            <th>date</th>
+                                            <th>status</th>
+                                            <th>paymentmode</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%orderData?.forEach((i,index)=>{%>
+                                        <tr>
+                                            
+                                            <td><%=i?.orderId%></td>
+                                            <td><b><%=i?.userId?.name%></b></td>
+                                            <td>
+                                                <%=i?.orderAmount%>
+                                            </td>
+                                            <td>
+                                                <%=i?.
+                                                couponId?.code
+                                                %>
+                                            </td>
+                                            <td>
+                                            
+                                                <%i.offers.forEach(i=>{%>
+                                                <%=i?.name%>,
+                                                <%})%>
+                                            
+                                            </td>
+                                            <td>
+                                            <%=i.couponDiscount+i.offerDiscount%>
+                                            </td>
+                                            <td><%=i?.createdAt.toISOString().split('T')[0]; %></td>
+                                            <td >
+                                                <%=i?.status%>
+                                                    
+                                            </td>
+                                        
+                                            <td><%=i?.payment%></td>
+                                        
+                                        </tr>
+                                        <%})%>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive//end -->
+                        
+                    </div>
+                    <!-- daily sales report -->
+                    <div id="daily" class="tab-content" style="display: none;">
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>No of sales</th>
+                                        <th>Total amount from sales</th>
+                                        <th>Total offer discount</th>
+                                        <th>Total coupon discount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <%dailyData?.forEach((i,index)=>{%>
+                                    <tr>
+                                        
+                                        <td><%=i?._id%></td>
+                                        <td><b><%=i?.totalSales%></b></td>
+                                        <td>
+                                            <%=i?.totalSalesAmount%>
+                                        </td>
+                                        <td>
+                                            <%=i?.
+                                            totalOfferDiscount
+                                            %>
+                                        </td>
+                                    
+                                        <td>
+                                        <%=i.totalCouponDiscount%>
+                                        </td>
+                                    </tr>
+                                    <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                        <!-- weekly sales section -->
+
+                        <div id="weekly" class="tab-content" style="display: none;">
+
+
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Week</th>
+                                            <th>No of sales</th>
+                                            <th>Total amount from sales</th>
+                                            <th>Total offer discount</th>
+                                            <th>Total coupon discount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%weeklyData?.forEach((i,index)=>{%>
+                                        <tr>
+                                            
+                                            <td><%=i?._id%></td>
+                                            <td><b><%=i?.totalSales%></b></td>
+                                            <td>
+                                                <%=i?.totalSalesAmount%>
+                                            </td>
+                                            <td>
+                                                <%=i?.
+                                                totalOfferDiscount
+                                                %>
+                                            </td>
+                                        
+                                            <td>
+                                            <%=i.totalCouponDiscount%>
+                                            </td>
+                                        </tr>
+                                        <%})%>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- monthly sales section -->
+
+                        
+                        <div id="monthly" class="tab-content" style="display: none;">
+
+
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Montly</th>
+                                            <th>No of sales</th>
+                                            <th>Total amount from sales</th>
+                                            <th>Total offer discount</th>
+                                            <th>Total coupon discount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%monthlyData?.forEach((i,index)=>{%>
+                                        <tr>
+                                            
+                                            <td><%=i?._id%></td>
+                                            <td><b><%=i?.totalSales%></b></td>
+                                            <td>
+                                                <%=i?.totalSalesAmount%>
+                                            </td>
+                                            <td>
+                                                <%=i?.
+                                                totalOfferDiscount
+                                                %>
+                                            </td>
+                                        
+                                            <td>
+                                            <%=i.totalCouponDiscount%>
+                                            </td>
+                                        </tr>
+                                        <%})%>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                    </div>
+
+                    <!-- yearly sales section -->
+
+                    
+                    <div id="yearly" class="tab-content" style="display: none;">
+
+
+
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Year</th>
+                                        <th>No of sales</th>
+                                        <th>Total amount from sales</th>
+                                        <th>Total offer discount</th>
+                                        <th>Total coupon discount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 <%yearlyData?.forEach((i,index)=>{%>
+                                    <tr>
+                                        
+                                        <td><%=i?._id%></td>
+                                        <td><b><%=i?.totalSales%></b></td>
+                                        <td>
+                                            <%=i?.totalSalesAmount%>
+                                        </td>
+                                        <td>
+                                            <%=i?.
+                                            totalOfferDiscount
+                                            %>
+                                        </td>
+                                       
+                                        <td>
+                                           <%=i.totalCouponDiscount%>
+                                        </td>
+                                    </tr>
+                                    <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="d-flex">
+                <div class="m-3">Total sales = <%=overallData[0].totalSales%></div>
+                <div class="m-3">Total sales amount=<%=overallData[0].totalSalesAmount%></div>
+                <div class="m-3">Total offer discount=<%=overallData[0].totalOfferDiscount%></div>
+                <div class="m-3">Total coupon discount = <%=overallData[0].totalCouponDiscount%></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <%- include("./partials/footer.ejs")%>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+       function openTab(evt, tabName) {
+        console.log(tabName);
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).style.display = "block";
+        if (evt) {
+            evt.currentTarget.classList.add("active");
+        }
+    }
+
+    // Set the default tab to display on page load
+    openTab(null, 'all');
+
+    // Generate PDF
+document.getElementById('generatePDF').addEventListener('click', () => {
+    console.log('hi');
+  const content = document.getElementById('fulldata').innerHTML;
+  const data = { html: content };
+ 
+  fetch('/admin/generate-pdf', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.blob())
+  .then(blob => {
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'file.pdf');
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+  })
+  .catch(error => console.error('Error:', error));
+});
+
+// Generate Excel
+document.getElementById('generateExcel').addEventListener('click', () => {
+  const content = document.getElementById('fulldata').innerHTML;
+  const data = { html: content };
+console.log('excel data');
+console.log(data);
+  fetch('/admin/generate-excel', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.blob())
+  .then(blob => {
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'file.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+  })
+  .catch(error => console.error('Error:', error));
+});
+
+  
+</script>

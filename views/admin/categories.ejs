@@ -1,0 +1,231 @@
+<%- include("./partials/header.ejs")%>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
+<%- include("./partials/sidebar.ejs")%>
+        <main class="main-wrap">
+            <%- include("./partials/nav.ejs")%>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Categories</h2>
+                        <p>Add, edit or delete a category</p>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <form action="/admin/addcategory" method="post" id="addcategoryform">
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Name</label>
+                                        <input type="text" placeholder="Type here" class="form-control" id="formcategoryname" name="categoryname" />
+                                    </div>
+                                  
+                                    <div class="mb-4">
+                                        <label class="form-label">Status</label>
+                                        <select class="form-select" name="status" id="formselect">
+                                            <option  value='show'>Show</option>
+                                            <option   value='hide'>hide</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Description</label>
+                                        <textarea placeholder="Type here" class="form-control" name="description" id="formdescription"></textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <label class="text-danger" id="errormessage"></label>
+                                        <button class="btn btn-primary" type="submit" id="createcategorybtn">Create category</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="table-responsive" id="reloadDiv">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <th>status</th>
+                                                <th class="text-end">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <%categories.forEach((i,index)=>{%>
+                                            <tr>
+                                                <td><%=index%></td>
+                                                <td><b><%=i.categoryName%></b></td>
+                                                <td><%=i.description%></td>
+                                                <td><%=i.status%></td>
+                                                <td class="text-end">
+                                                    <button type="button" class="btn btn-sm editbtns" data-bs-toggle="modal" data-bs-target="#editcategory" data-category-id="<%= i.id %>" data-category-name="<%= i.categoryName %>" data-category-description="<%= i.description %>" data-category-status="<%= i.status %>">
+                                                        Edit
+                                                      </button>
+                                                      
+                                                    <!-- Modal -->
+                                                    
+                                                </td>
+                                            </tr>
+                                        <%})%>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- .col// -->
+                        </div>
+                        <!-- .row // -->
+                    </div>
+                    <!-- card body .// -->
+                </div>
+                <!-- card .// -->
+            </section>
+
+           <!-- Button trigger modal -->
+
+           <div class="modal" id="editcategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                            <form method="post" id="editcategoryform">
+                            <div class="mb-3">
+                                <label class="form-label">Category Name</label>
+                                <input type="text" class="form-control" id="categoryname" placeholder="">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <input type="text" class="form-control" id="description" placeholder="">
+                            </div>
+                            <div class="form-check form-switch mx-3">
+                                <input class="form-check-input shadow-none" type="checkbox" role="switch" id="categorystatus">
+                                <label class="form-check-label">Status - <span id="statusindicator"></span></label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="text-danger" id="erroredit"></div>
+                            <button type="submit" class="btn btn-primary" form="editcategoryform">Update</button>
+                        </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+        
+
+  
+                   
+<%- include("./partials/footer.ejs")%> 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- edit category -->
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+    const editbtns = Array.from(document.getElementsByClassName('editbtns'));
+    let Catid;
+
+    editbtns.forEach(element => {
+        element.addEventListener('click', function () {
+            const categoryId = this.getAttribute('data-category-id');
+            Catid = categoryId;
+            console.log(Catid); 
+            const categoryName = this.getAttribute('data-category-name');
+            const categoryDescription = this.getAttribute('data-category-description');
+            const categoryStatus = this.getAttribute('data-category-status');
+
+            
+            document.getElementById('categoryname').value = categoryName;
+            document.getElementById('description').value = categoryDescription;
+            document.getElementById('categorystatus').checked = (categoryStatus === 'show');
+            document.getElementById('statusindicator').textContent = categoryStatus;
+        });
+    });
+
+    
+    document.getElementById('editcategoryform').addEventListener('submit', function (event) {
+        event.preventDefault();
+        console.log(Catid);
+
+        // Retrieve categoryId from the last clicked edit button
+        // const categoryId = document.querySelector('.editbtns:focus').getAttribute('data-category-id');
+
+        const categoryName = document.getElementById('categoryname').value;
+        const categoryDescription = document.getElementById('description').value;
+        const categoryStatus = document.getElementById('categorystatus').checked ? 'show' : 'hide';
+
+        axios.post(`/admin/editcategory/${Catid}`, {
+            categoryname: categoryName,
+            description: categoryDescription,
+            status: categoryStatus
+        })
+        .then((response) => {
+        if(response.data===true){
+           window.location.reload();
+                        const notyf = new Notyf({
+                            position: { x: 'right', y: 'top' },
+                            dismissible: true,
+                            duration: 2000,
+                        });
+                        notyf.success(`${categoryName} is successfully updated`);
+                    
+        }else{
+            document.getElementById('erroredit').textContent=response.data;
+        }
+
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+})
+
+</script>
+
+
+<!-- addcategory -->
+<script>
+            document.addEventListener('DOMContentLoaded', function () {
+            // Your script code here
+             const addcategoryform = document.getElementById('addcategoryform');
+       
+             addcategoryform.addEventListener('submit', function (event) {
+            const status = document.getElementById('formselect').value;
+            const categoryname = document.getElementById('formcategoryname').value;
+            const description = document.getElementById('formdescription').value;
+            const errormessage = document.getElementById('errormessage');
+            event.preventDefault();
+            axios.post('/admin/addcategory', { status, categoryname, description })
+                .then((response) => {
+                    if (response.data === false) {
+                        errormessage.textContent ="existing category name";
+                    }else if(response.data !==true){
+                        errormessage.textContent = response.data;
+                    }else {
+                        $('#reloadDiv').load('/admin/category #reloadDiv')
+                        const notyf = new Notyf({
+                            position: { x: 'right', y: 'top' },
+                            dismissible: true,
+                            duration: 2000,
+                        });
+                        notyf.success(`${categoryname} is successfully added`);
+                    
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+   
+</script>

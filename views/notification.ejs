@@ -1,0 +1,56 @@
+<%- include("./header.ejs")%>
+<%- include("./partials/navbar.ejs")%>
+<style>
+	 #notificationContent {
+            height: 400px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+       
+        /* Hide scrollbar when not needed */
+    #notificationContent::-webkit-scrollbar {
+            width: 0;
+        }
+</style>
+<div class="hero">
+	<div class="container">
+		<div class="row justify-content-between">
+			<div class="col-lg-5">
+				<div class="intro-excerpt">
+					<h1><%if(catname){%><%=catname%><%}else{%>Shop<%}%></h1>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+		<div class="untree_co-section product-section before-footer-section" >
+		    <div class="container" id="notificationContent" >
+				<div class="col-4">
+				<%notifiData?.messages?.forEach(i=>{%>
+                <article class="message">
+                    <div class="message-header">
+                     
+                      <button class="delete" aria-label="delete"></button>
+                    </div>
+                    <div class="message-body">
+                      <%=i%>
+                    </div>
+                  </article>
+				  <%})%>
+				</div>
+		    </div>
+		</div>
+
+
+		<%- include("./footer.ejs")%>
+		<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+		
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
+	
+
+	</body>
+
+</html>
