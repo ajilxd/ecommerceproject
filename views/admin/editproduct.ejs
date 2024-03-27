@@ -50,20 +50,42 @@
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Description</label>
-                                    <textarea value="<%=productData.description%>" class="form-control" rows="4" name="description" id="formdescription"></textarea>
+                                    <textarea  class="form-control" rows="4" name="description" id="formdescription"><%=productData.description%></textarea>
                                 </div>
                             </div>
                         </div>
                         <!-- card end// -->
                         <div class="card mb-4">
                             <div class="card-body">
-                                <div>
-                                    <label class="form-label">Images</label>
-                                    <input class="form-control" type="file"  
-                                    name="files" multiple id="formimages"/>
+                                <div class="row">
+                                    <div class="card-body col-sm-3">
+                                        <div class="input-upload">
+                                            <img id="image-preview1" src="\multer\products\<%=productData.image[0]%>" alt="" />
+                                            <input data-id="1" data-prod="" class="form-control inputImage" name="images0" type="file" id="image-input-1" accept="image/*" />
+                                        </div>
+                                    </div>
+                                    <div class="card-body col-sm-3">
+                                        <div class="input-upload">
+                                            <img id="image-preview2" src="\multer\products\<%=productData.image[1]%>" alt="" />
+                                            <input data-id="2"  class="form-control inputImage" name="images1" type="file" id="image-input-2" accept="image/*"   />
+                                        </div>
+                                    </div>
+                                    <div class="card-body col-sm-3">
+                                        <div class="input-upload">
+                                            <img id="image-preview3" src="\multer\products\<%=productData.image[2]%>" alt="" />
+                                            <input data-id="3"  class="form-control inputImage" name="images2" type="file" id="image-input-3" accept="image/*"  />
+                                        </div>
+                                    </div>
+                                    <div class="card-body col-sm-3">
+                                        <div class="input-upload">
+                                            <img id="image-preview4" src="\multer\products\<%=productData.image[3]%>" alt="" />
+                                            <input data-id="4"  class="form-control inputImage" name="images3" type="file" id="image-input-4" accept="image/*"  />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                       
                         <!-- card end// -->
                     </div>
                     <div class="col-lg-3">
@@ -73,6 +95,7 @@
                                     <label class="form-label">Price</label>
                                     <input type="text" placeholder="<%=productData.price%>" value="<%=productData.price%>" class="form-control" name ="price" id="formprice" />
                                 </div>
+                                <%images =productData.image%>
                                 <div class="mb-4">
                                     <label class="form-label">Status</label>
                                     <select class="form-select" name="visibility" id="formvisibility">
@@ -107,7 +130,23 @@
     <%- include("partials/footer.ejs")%>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- images preview change when we click image-->
+<script>
+const imageInputs=document.querySelectorAll('.inputImage')
+imageInputs.forEach(i=>{
+    i.addEventListener('change',function(){
+        dataid=i.getAttribute('data-id');
+        const previewid="image-preview"+dataid
+        console.log(previewid);
+        filesd=this.files[0];
+        console.log(filesd)
+        document.getElementById(previewid).src=URL.createObjectURL(filesd)
+    })
+})
+</script>
+
     <script>
+
     document.addEventListener('DOMContentLoaded', function () {
         const editproductform = document.getElementById('editproductform');
     
@@ -122,7 +161,11 @@
             const productname = document.getElementById('formproductname').value;
             const color = document.getElementById('formcolor').value;
             const size = document.getElementById('formsize').value;
-            const files = document.getElementById('formimages').files;
+            const file1 = document.getElementById("image-input-1").files;
+            const file2 = document.getElementById("image-input-2").files;
+            const file3 = document.getElementById("image-input-3").files;
+            const file4 = document.getElementById("image-input-4").files;
+            console.log({file1,file2,file3,file4})
             const errormessage = document.getElementById('errormessage')
             const categorySelect =document.getElementById('categorySelect').value
             const quantity =document.getElementById('formquantity').value
@@ -138,11 +181,9 @@
             formData.append('size', size);
             formData.append('categories',categorySelect)
             formData.append('quantity',quantity)
-    
-            // Append each file individually to FormData object
-            for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
-            }
+            formData.append('files',[file1,file2,file3,file4])
+           
+          
     
             // Make POST request with Fetch API
             fetch(`/admin/editproduct/${'<%=productData._id%>'}`, {

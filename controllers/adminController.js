@@ -260,7 +260,7 @@ const editProduct = async (req, res) => {
 
 const editProductDb = async (req, res) => {
   try {
-    console.log(req.body);
+    
     const {
       price,
       cost,
@@ -273,7 +273,12 @@ const editProductDb = async (req, res) => {
       categories,
       quantity,
     } = req.body;
+    console.log(req.body);
     const productId = req.params.id;
+    // console.log(req.body);
+    // const {image1,image2,image3,image4} =req.files;
+    // console.log(image1);
+    throw new Error('Error message');
     const imagePath = req.files.map((i) => i.filename);
     const existingproduct = await productModel.findOne({
       productName: productname,
