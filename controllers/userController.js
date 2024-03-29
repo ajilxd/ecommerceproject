@@ -330,10 +330,10 @@ const editProfileHandler = async (req, res) => {
     const { name, gender, email, mobileno } = req.body;
 
     const userId = req.session.user._id;
-    const existUser = await User.findOne({ email: email });
-    if (existUser) {
-      return res.json("Email is already taken"); //checking whether the email is taken or not
-    }
+    // const existUser = await User.findOne({ email: email });
+    // if (existUser) {
+    //   return res.json("Email is already taken"); //checking whether the email is taken or not
+    // }
     try {
       await editProfileSchema.validateAsync(req.body);
     } catch (error) {

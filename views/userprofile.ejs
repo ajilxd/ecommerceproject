@@ -295,12 +295,12 @@
                   
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" id="pname" placeholder="<%= userData.name %>">
+                        <input type="text" class="form-control" id="pname" value="<%= userData.name %>">
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
                         <%if(userData.mobilenumber){%>
-                        <input type="text" class="form-control" id="pphone" placeholder="<%= userData.mobilenumber %>">
+                        <input type="text" class="form-control" id="pphone" value="<%= userData.mobilenumber %>">
                         <%}else{%>
                           <input type="text" class="form-control" id="pphone" placeholder="Add phone number">
                         <%}%>
@@ -315,7 +315,7 @@
                     </div>
                     <div class="form-group">
                         <label for="email">Email address</label>
-                        <input type="email" class="form-control" id="pemail" aria-describedby="emailHelp" placeholder="<%= userData.email %>" disabled>
+                        <input type="email" class="form-control" id="pemail" aria-describedby="emailHelp" value="<%= userData.email %>" disabled>
                     </div>
                     <div class="text-danger" id="profileerror"></div>
                     <button class="save-btn" id="editprofilebtn">Save</button>

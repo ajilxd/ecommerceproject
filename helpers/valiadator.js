@@ -227,19 +227,11 @@ const editProfileSchema = joi.object({
       "any.required": "Mobile number is required",
       "string.pattern.base": "Enter a valid mobile number",
     }),
-  email: joi
-    .string()
-    .email({ tlds: { allow: ["com"] } })
-    .required()
-    .messages({
-      "string.base": "Email must be a string",
-      "string.empty": "Email cannot be empty",
-      "string.email": "Enter a valid email address",
-      "any.required": "Email is required",
-    }),
   gender: joi.string().required().messages({
     "any.required": "Gender is required",
   }),
+  email: joi
+    .string(),
 });
 
 const editPasswordSchema = joi.object({
@@ -346,9 +338,7 @@ const offerSchema = joi.object({
     'date.base': 'Expiry date must be a valid date in ISO 8601 format (e.g., YYYY-MM-DD).',
     'date.min': 'Expiry date cannot be before 2024.'
   }),
-  description: joi.string().required().messages({
-    'any.required': 'Description is required.'
-  }),
+  description: joi.string(),
   category: joi.string(),
   image: joi.string(),
   offerid:joi.string(),

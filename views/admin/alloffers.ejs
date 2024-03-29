@@ -52,7 +52,6 @@
                                             <td><%= i?.type %></td>
                                             <td><%=since%></td>
                                             <td><%=until %></td>
-                                            <td class="p-3 "><a href="/admin/editoffer/<%=i._id%>"><button class="btn btn-warning btn-sm rounded-pill px-4 text-white"  >Edit</button></a></td>
                                             <%if(i.status=='active'){%>
                                             <td class="p-3 "><a ><button class="btn btn-danger btn-sm rounded-pill px-4 text-white removeofferbtns" data-id="<%=i?._id%>" data-type="<%=i?.type%>" data-name="<%=i?.name%>" 
                                              >remove</button></a></td>

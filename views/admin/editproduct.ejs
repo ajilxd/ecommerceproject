@@ -3,7 +3,7 @@
 <%- include("partials/sidebar.ejs")%>
         <main class="main-wrap">
             <%- include("partials/nav.ejs")%>
-            <form action="" method="post" enctype="multipart/form-data" id="editproductform"  >
+            <form  action="" method="post" enctype="multipart/form-data" id="editproductform"  >
             <section class="content-main">
                 <%=productData.productName%>
                 <div class="row">
@@ -61,25 +61,25 @@
                                     <div class="card-body col-sm-3">
                                         <div class="input-upload">
                                             <img id="image-preview1" src="\multer\products\<%=productData.image[0]%>" alt="" />
-                                            <input data-id="1" data-prod="" class="form-control inputImage" name="images0" type="file" id="image-input-1" accept="image/*" />
+                                            <input data-id="1" data-prod="" class="form-control inputImage" name="images" type="file" id="image-input-1" accept="image/*" />
                                         </div>
                                     </div>
                                     <div class="card-body col-sm-3">
                                         <div class="input-upload">
                                             <img id="image-preview2" src="\multer\products\<%=productData.image[1]%>" alt="" />
-                                            <input data-id="2"  class="form-control inputImage" name="images1" type="file" id="image-input-2" accept="image/*"   />
+                                            <input data-id="2"  class="form-control inputImage" name="images" type="file" id="image-input-2" accept="image/*"   />
                                         </div>
                                     </div>
                                     <div class="card-body col-sm-3">
                                         <div class="input-upload">
                                             <img id="image-preview3" src="\multer\products\<%=productData.image[2]%>" alt="" />
-                                            <input data-id="3"  class="form-control inputImage" name="images2" type="file" id="image-input-3" accept="image/*"  />
+                                            <input data-id="3"  class="form-control inputImage" name="images" type="file" id="image-input-3" accept="image/*"  />
                                         </div>
                                     </div>
                                     <div class="card-body col-sm-3">
                                         <div class="input-upload">
                                             <img id="image-preview4" src="\multer\products\<%=productData.image[3]%>" alt="" />
-                                            <input data-id="4"  class="form-control inputImage" name="images3" type="file" id="image-input-4" accept="image/*"  />
+                                            <input data-id="4"  class="form-control inputImage" name="images" type="file" id="image-input-4" accept="image/*"  />
                                         </div>
                                     </div>
                                 </div>
@@ -98,7 +98,7 @@
                                 <%images =productData.image%>
                                 <div class="mb-4">
                                     <label class="form-label">Status</label>
-                                    <select class="form-select" name="visibility" id="formvisibility">
+                                    <select class="form-select" name="status" id="formvisibility">
                                         <option value="active">active</option>
                                         <%if(productData.status==='inactive'){%>
                                         <option value="inactive" selected>inactive</option>
@@ -161,27 +161,28 @@ imageInputs.forEach(i=>{
             const productname = document.getElementById('formproductname').value;
             const color = document.getElementById('formcolor').value;
             const size = document.getElementById('formsize').value;
-            const file1 = document.getElementById("image-input-1").files;
-            const file2 = document.getElementById("image-input-2").files;
-            const file3 = document.getElementById("image-input-3").files;
-            const file4 = document.getElementById("image-input-4").files;
+            const file1 = document.getElementById("image-input-1").files[0];
+            const file2 = document.getElementById("image-input-2").files[0];
+            const file3 = document.getElementById("image-input-3").files[0];
+            const file4 = document.getElementById("image-input-4").files[0];
             console.log({file1,file2,file3,file4})
             const errormessage = document.getElementById('errormessage')
             const categorySelect =document.getElementById('categorySelect').value
             const quantity =document.getElementById('formquantity').value
-            const formData = new FormData();
+            const form = document.getElementById('editproductform')
+            const formData = new FormData(form);
     
-            formData.append('price', price);
-            formData.append('cost', cost);
-            formData.append('description', description);
-            formData.append('brand', brand);
-            formData.append('status', status);
-            formData.append('productname', productname);
-            formData.append('color', color);
-            formData.append('size', size);
-            formData.append('categories',categorySelect)
-            formData.append('quantity',quantity)
-            formData.append('files',[file1,file2,file3,file4])
+            // formData.append('price', price);
+            // formData.append('cost', cost);
+            // formData.append('description', description);
+            // formData.append('brand', brand);
+            // formData.append('status', status);
+            // formData.append('productname', productname);
+            // formData.append('color', color);
+            // formData.append('size', size);
+            // formData.append('categories',categorySelect)
+            // formData.append('quantity',quantity)
+            // formData.append('files',[file1,file2,file3,file4])
            
           
     

@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                                     <div class=" col-md-10 mb-10">
-                                        <label class="form-label " >Category description</label>
+                                        <label class="form-label " >offer description</label>
                                        <textarea  id="offerdescription" cols="60" rows="3"></textarea>
                                     </div>
                                    
@@ -129,7 +129,14 @@
     
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-   
+<script>
+  document.getElementById('offersubmitbtn').addEventListener('click',function(){
+   const img =document.getElementById('image-input').value;
+   if(!img){
+    return document.getElementById('errormessage').textContent="Form cant be submitted with empty values"
+   }
+  })
+</script> 
 <script>
  
 document.addEventListener('DOMContentLoaded',function(){
@@ -225,16 +232,15 @@ function dataURItoBlob(dataURI) {
 
 
 document.getElementById('offersubmitbtn').addEventListener('click',function(){
-    console.log('hii');
    const name = document.getElementById('offername').value;
    const status =document.getElementById('offerstatus').value;
    const discountperecentage =document.getElementById('offerdiscountperecentage').value;
    const expirydate =document.getElementById('offerexpirydate').value;
-   const description = document.getElementById('offerdescription').value;
    const category = document.getElementById('offercategory').value;
    const product= document.getElementById('offerproduct').value;
    const image = document.getElementById('image-input').files[0];
    const type = document.querySelector('input[name="type"]:checked')?.value;
+   const description = document.getElementById('offerdescription').value;
    const data={name,status,discountperecentage,expirydate,description,category,image};
    const croppedImageBlob = dataURItoBlob(croppedImageData);
 
@@ -269,6 +275,9 @@ document.getElementById('offersubmitbtn').addEventListener('click',function(){
                         },
                         onClick: function(){} // Callback after click
                         }).showToast();
+                        setTimeout(() => {
+                          window.location.href="/admin/offers"
+                        },3000);
        }else{
         Toastify({
                         text:response.data,

@@ -49,7 +49,7 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label class="form-label">Expiry Date</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id ="expiryDate" />
+                                    <input type="date" placeholder="Type here" class="form-control" id ="expiryDate" />
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Status</label>
@@ -114,6 +114,9 @@
                                     background: "linear-gradient(to right, #FFCC00, #FF9900)",
                                 },
                             }).showToast();
+                            setTimeout(function(){
+                                window.location.reload()
+                            },3000)
                         }else{
                             Toastify({
                                 text: response.data,

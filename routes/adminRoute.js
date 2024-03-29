@@ -29,7 +29,7 @@ adminRoute.get("/editproduct/:id", isAdminLogin, adminController.editProduct);
 adminRoute.post(
   "/editproduct/:id",
   isAdminLogin,
-  upload.array("files", 4),
+  upload.array("images", 4),
   adminController.editProductDb
 );
 adminRoute.post(
@@ -70,8 +70,7 @@ adminRoute.post("/editcoupon/:id",adminController.editCouponDb);
 adminRoute.get("/addoffer",isAdminLogin,adminController.addofferload)
 adminRoute.post("/addoffer", uploadB.single("image"),adminController.offerDb);
 adminRoute.get("/offers",isAdminLogin,adminController.alloffersloader);
-adminRoute.get("/editoffer/:id",adminController.editOffer);
-adminRoute.post("/editoffer",uploadB.single("image"),adminController.editofferdb);
+
 adminRoute.post("/removeoffer/:id",adminController.removeOfferHandler)
 adminRoute.post("/addoffer/:id",adminController.reactivateOfferHandler)
 

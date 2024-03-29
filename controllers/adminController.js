@@ -273,19 +273,23 @@ const editProductDb = async (req, res) => {
       categories,
       quantity,
     } = req.body;
-    console.log(req.body);
+    // console.log("body ",req.body);
+     console.log("files",req.files)
     const productId = req.params.id;
-    // console.log(req.body);
-    // const {image1,image2,image3,image4} =req.files;
-    // console.log(image1);
-    throw new Error('Error message');
-    const imagePath = req.files.map((i) => i.filename);
-    const existingproduct = await productModel.findOne({
-      productName: productname,
-    });
-    if (existingproduct) {
-      return res.json("existing productname");
+    const productFromDatabase=await productModel.findOne({_id:productId});
+    // console.log(productFromDatabase)
+    let imagePath;
+    imagePath=productFromDatabase.image
+    if(req.files.length<1){
+      console.log('hiiiii no images ');
+      imagePath=productFromDatabase.image
+    }else{
+      req.files.map((i,index) =>imagePath[index]=i.mimetype=='image/png'? i.filename:productFromDatabase.image[index]);
     }
+    console.log(imagePath);
+    
+   
+   
     try {
       await productSchema.validateAsync(req.body);
     } catch (error) {
@@ -402,7 +406,7 @@ const logOutAdmin = async (req, res) => {
 
 const cancelApprovedHandler = async (req, res) => {
   try {
-    console.log(req.body);
+    console.log('Request for cancel order received')
     const { orderId, requestId, userId } = req.body;
     await orderModel.updateOne(
       { orderId: orderId },
@@ -420,7 +424,24 @@ const cancelApprovedHandler = async (req, res) => {
         upsert: true,
       }
     );
-
+    const orderDataBase = await orderModel.findOne({
+      orderId:orderId});
+    console.log('order',orderDataBase)
+    console.log(orderDataBase.payment);
+    if(orderDataBase.payment=='online'){
+      console.log('appuuuuu')
+    const walletDataBase = await walletModel.findOne({userId:userId});
+    console.log(walletDataBase);
+    if(walletDataBase){
+      const updatedb=await walletModel.updateOne({userId:userId},{balance:walletDataBase.balance+orderDataBase.orderAmount
+      })
+    }else{
+      const updatedb=await walletModel.updateOne({userId:userId},{balance:orderDataBase.orderAmount
+      },{upsert:true})
+    }
+   
+    console.log(updatedb);
+    }
     res.json(true);
   } catch (error) {
     console.log(error.message);
@@ -518,6 +539,16 @@ const addCouponDb = async(req,res)=>{
        await couponSchema.validateAsync(req.body);
     }catch(error){
        return res.json(error.message)
+    }
+    if(Number(discountAmount)>=Number(criteriaAmount)){
+      console.log({discountAmount,criteriaAmount})
+      return res.json('discount amount should be lower than criteria amount');
+    }
+
+    const inputDate =new Date(expiryDate);
+    const currentDate = new Date(Date.now());
+    if(inputDate.getTime() <= currentDate.getTime()){
+      return res.json('enter a valid expiry date');
     }
     const couponData =  new CouponModel({
       name:name,
@@ -630,21 +661,14 @@ const offerDb = async (req,res)=>{
 
     
   }else if(type=='product'){
+    console.log('product offer handler here')
+    const productdata=await productModel.findOne({_id:product})
     const newproductdata= await productModel.findOneAndUpdate(
       { _id:product},
-      { $set: {  productOfferId:offerDb._id } }
+      { $set: {  productOfferId:offerDb._id,price:Math.floor(productdata.price-(productdata.price*discountpercentage/100)),productDiscount:discountpercentage } }
     );
-    const productOfferProducts = await productModel.find({ })
-    productOfferProducts.map(i=>{
-     
-
-      const updatepricebyproductoffer= async function(i){
-      await productModel.updateOne({_id:i._id},{$set:{price:Math.floor(i.price-(i.price*discountpercentage/100)),productDiscount:discountpercentage}})
-       }
-
-       updatepricebyproductoffer(i);
-
-    })
+    
+      console.log(newproductdata);
 
   }
    res.json(true);
@@ -662,39 +686,9 @@ const alloffersloader = async(req,res)=>{
   }
 }
 
-const editOffer = async(req,res)=>{
-  try{
-    const offerid =req.params.id;
-    const offerdata= await offerModel.findOne({_id:offerid})
-    res.render('editoffer',{offerdata});
-  }catch(error){
-    console.log(error.message)
-  }
-}
 
 
-const editofferdb = async(req,res)=>{
-  try{
-    console.log(req.body);
-    const {name,status,discountpercentage,expirydate,description,category,offerid} =req.body;
-    //  validation
-   try{
-    await offerSchema.validateAsync(req.body);
-   }
-   catch(error){
-   return res.json(error.message);
-   }
-  // checking offer name is taken or not
-  const existing= await offerModel.findOne({name});
-  if(existing){
-    return res.json("Existing offer name");
-  }
-    await offerModel.updateOne({_id:offerid},{name,status,discountpercentage,expirydate,description,category});
-    res.json(true);
-  }catch(error){
-    console.log(error);
-  }
-}
+
 
 
 const removeOfferHandler=async (req,res)=>{
@@ -713,15 +707,12 @@ const removeOfferHandler=async (req,res)=>{
         updatePriceByRemoveCategoryOffer(i);
       })
     }else if(type=='product'){
-      console.log('im a product');
-      const productOfCategoryOffers = await productModel.find({productOfferId:offerid});
-      productOfCategoryOffers.map(i=>{
-        discount=i.productDiscount;
-        const updatePriceByRemoveCategoryOffer= async function(i){
-        await productModel.updateOne({_id:i._id},{price:Math.floor(i.price+i.originalPrice*(discount/100)),productDiscount:0,productOfferId:null})
-        }
-        updatePriceByRemoveCategoryOffer(i);
-      })
+        const product = await productModel.findOne({productOfferId:offerid});
+        console.log(product);
+        const discount =product.productDiscount;
+        console.log('pp',product.price,'pop',product.originalPrice*(discount/100))
+        await productModel.updateOne({_id:product._id},{price:Math.floor(product.price+product.originalPrice*(discount/100)),productDiscount:0,productOfferId:null})
+        
     }
     // update offer status to inactive
     await offerModel.updateOne({_id:offerid},{status:'inactive'})
@@ -740,7 +731,6 @@ const reactivateOfferHandler = async (req,res)=>{
     if(type=='category'){
    
      
-      // await productModel.updateMany({categoryId:category},{$set:{originalprice:2000}})
       
      const newproductdata= await productModel.findOneAndUpdate(
         { categoryId:offerData.category },
@@ -760,22 +750,12 @@ const reactivateOfferHandler = async (req,res)=>{
   
       
     }else if(type=='product'){
+      const product = await productModel.findOne({ _id:offerData.product});
       const newproductdata= await productModel.findOneAndUpdate(
         { _id:offerData.product },
-        { $set: {  productOfferId:offerData._id } }
+        { $set: {  productOfferId:offerData._id,price:Math.floor(product.price-(product.price*offerData.discountpercentage/100)),productDiscount:offerData.discountpercentage } }
       );
-      const productOfferProducts = await productModel.find({_id:offerData.product})
-      productOfferProducts.map(i=>{
-       
-  
-        const reupdatepricebyproductoffer= async function(i){
-        await productModel.updateOne({_id:i._id},{$set:{price:Math.floor(i.price-(i.price*offerData.discountpercentage/100)),productDiscount:offerData.discountpercentage}})
-         }
-  
-         reupdatepricebyproductoffer(i);
-  
-      })
-  
+      console.log(newproductdata);
     }
      // update offer status to inactive
      await offerModel.updateOne({_id:offerId},{status:'active'})
@@ -1004,8 +984,7 @@ module.exports = {
   addofferload,
   offerDb ,
   alloffersloader,
-  editOffer,
-  editofferdb,
+  
   removeOfferHandler,
   reactivateOfferHandler,
   salesReportLoader,

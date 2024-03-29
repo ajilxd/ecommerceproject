@@ -193,13 +193,15 @@ const placeorderdb = async (req, res) => {
     //offer ids and  offerdiscount
     let offerArrays=[];
     let totalOfferDiscount=0;
-
+    console.log(totalOfferDiscount);
     for (cartitem of cartData) {
      const product= await productModel.findOne({_id:cartitem.productId});
      const {categoryOfferId, productOfferId, categoryDiscount,productDiscount}=product;
      offerArrays.push(categoryOfferId,productOfferId);
+    
      totalOfferDiscount=(categoryDiscount*cartitem.price/100)*cartitem.quantity+(productDiscount*cartitem.price/100)*cartitem.quantity
      totalOfferDiscount=Math.floor(totalOfferDiscount);
+    
     }
 
 
@@ -226,7 +228,7 @@ const placeorderdb = async (req, res) => {
       couponId:couponData?._id,
       couponDiscount:couponData?.discountAmount,
       offers:offerArrays,
-      offerDiscount:totalOfferDiscount
+      offerDiscount:totalOfferDiscount||0
     });
     await orderData.save();
     await cartModel.deleteMany({ userId: userId });

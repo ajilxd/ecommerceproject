@@ -181,7 +181,11 @@ document.getElementById('image-input').addEventListener('change', function(event
                 console.log(data);
                if(data===true){
                             
-                            
+                setTimeout(function(){
+                            window.location.reload()
+
+                        },3000)
+                         
                 Toastify({
                         text: `${productname} has been succesfully added  `,
                         duration: 5000,
@@ -226,10 +230,10 @@ document.getElementById('image-input').addEventListener('change', function(event
                         },
                         onClick: function(){} // Callback after click
                         }).showToast();
-
-
-
-
+                       
+                           
+                       
+                      
 
                 
                }

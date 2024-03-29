@@ -4,9 +4,6 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     isProduct = Object.keys(req.body).includes("productname");
-    console.log('multer.........')
-    console.log(req.body);
-    console.log(file);
     let destinationFolder;
     
       destinationFolder = "./public/multer/products";
