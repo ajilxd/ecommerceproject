@@ -78,4 +78,5 @@ adminRoute.post("/addoffer/:id",adminController.reactivateOfferHandler)
 adminRoute.get("/salesreport",isAdminLogin,adminController.salesReportLoader);
 adminRoute.post('/generate-pdf',adminController.pdfGenerator)
 adminRoute.post('/generate-excel',adminController.excelGenerator)
+adminRoute.post('/customsalesreport',adminController.customsalesreport);
 module.exports = adminRoute;

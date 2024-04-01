@@ -132,8 +132,16 @@
                               <%})%>
                             </tbody>
                           </table>
+                         
                     </div>
                 </div>
+                <div class="d-flex justify-content-center">
+                <div class="col-3">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination" id="pagination"></ul>
+                      </nav>
+                </div>
+            </div>
             </div>
         </div>
         
@@ -142,6 +150,30 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+     function generatePagination(numPages) {
+    const paginationContainer = document.getElementById('pagination');
+    paginationContainer.innerHTML = ''; // Clear existing pagination links
+
+    // Add page number links
+    for (let i = 1; i <= numPages; i++) {
+      paginationContainer.innerHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+    }
+  }
+  let pages =9
+  generatePagination(pages);
+  
+</script>
+
+
+
+
+
+
+
+
+
+
 <script>
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;

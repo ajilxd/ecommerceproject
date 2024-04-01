@@ -591,7 +591,15 @@ const editCouponDb =async (req,res)=>{
     }catch(error){
        return res.json(error.message)
     }
-    
+    if(Number(discountAmount)>=Number(criteriaAmount)){
+      console.log({discountAmount,criteriaAmount})
+      return res.json('discount amount should be lower than criteria amount');
+    }
+    const inputDate =new Date(expiryDate);
+    const currentDate = new Date(Date.now());
+    if(inputDate.getTime() <= currentDate.getTime()){
+      return res.json('enter a valid expiry date');
+    }
     await CouponModel.updateOne({_id:couponId},{$set:{
       name,code,status,limit,expiryDate,discountAmount,criteriaAmount
     }})
@@ -625,6 +633,15 @@ const offerDb = async (req,res)=>{
    catch(error){
    return res.json(error.message);
    }
+   const inputDate =new Date(expirydate);
+    const currentDate = new Date(Date.now());
+    if(inputDate.getTime() <= currentDate.getTime()){
+      return res.json('enter a valid expiry date');
+    }
+
+
+
+
   // checking offer name is taken or not
   const existing= await offerModel.findOne({name});
   if(existing){
@@ -845,7 +862,7 @@ const salesReportLoader = async (req,res)=>{
       }
     }
   ])
-  console.log(overallData)
+  
     res.render('salesreport',{orderData,dailyData,monthlyData,yearlyData,overallData,weeklyData});
   }catch(error){
     console.log(error.message)
@@ -945,6 +962,21 @@ const excelGenerator = async (req, res) => {
   }
 };
 
+// custom date sales report
+const customsalesreport =async (req,res)=>{
+  try{
+    let fromDate = req.body.from; // Replace with your desired from date
+    let toDate = req.body.to; // Replace with your desired to date
+    fromDate=new Date(fromDate);
+    toDate=new Date(toDate);
+    console.log({fromDate,toDate})
+    orders = await orderModel.find({createdAt: {$gte:fromDate, $lte:toDate}}).populate('userId').populate('couponId').populate('offers');
+    console.log(orders)
+    res.json(orders);
+  }catch(error){
+    console.log(error.message)
+  }
+}
 
 
 
@@ -990,4 +1022,5 @@ module.exports = {
   salesReportLoader,
   excelGenerator,
   pdfGenerator,
+  customsalesreport
 };
