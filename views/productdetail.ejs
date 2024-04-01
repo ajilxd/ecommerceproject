@@ -446,11 +446,11 @@
 						<div class="mt-3">
 							<%if(productData.quantity<1){%><span class="text-danger fw-bold lead">No stock</span><%}else{%>
 							<span  class="round-black-btn mt-4" id="producttocart" data-id="<%=productData._id%>">Add to Cart</span>
-							<%if(wishlistData?.product?.includes(productData._id)){%>
+							
 							<span  class="round-black-btn mt-4" id="producttowishlist" data-id="<%=productData._id%>">Add to wishlist</span>
-							<%}else{%>
-								<span  class="round-black-btn mt-4"  >Wishlisted</span>
-							<%}%>
+							
+								
+							
 							<%}%>
 						</div>
 					</div>
@@ -631,7 +631,8 @@
 			const  productid=this.getAttribute('data-id');
 			axios.post(`/addtowishlist/`,{ productid}).then((response)=>{
 				if(response.data==true){
-					notyf.success('product added to wishlist')
+					notyf.success('product added to wishlist');
+					this.textContent="Wishlisted"
 				}else if(response.data=='nosession'){
 					notyf.error('user should login ')
 				}

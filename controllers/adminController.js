@@ -68,14 +68,21 @@ const categoriesLoader = async (req, res) => {
 
 const ordersLoader = async (req, res) => {
   try {
-    const orderData = await orderModel.find({}).populate("userId");
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;   
+    
+    const totalCount = await  orderModel.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+    console.log('Total no of pages are ',totalPages);
+    const orderData = await orderModel.find({}).populate("userId").sort({createdAt:-1}).skip(skip).limit(limit);
     const cancelData = await requestModel
       .find({ isCancel: true })
       .populate("userId");
     const returnData = await requestModel
       .find({ isReturn: true })
       .populate("userId");
-    res.render("orders", { orderData, cancelData, returnData });
+    res.render("orders", { orderData, cancelData, returnData,totalPages});
   } catch (error) {
     console.log(error.message);
   }

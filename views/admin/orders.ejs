@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orders Dashboard</title>
 <style>
-    /* Add your CSS styles here */
+   
 </style>
 </head>
 <body>
@@ -72,6 +72,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="d-flex justify-content-center">
+                            <div class="col-3 d-flex" id="paginationsection" data-total="<%=totalPages%>">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination" id="pagination"></ul>
+                                  </nav>
+                            </div>
+                        </div>
                         <!-- table-responsive//end -->
                     
                 </div>
@@ -135,13 +142,7 @@
                          
                     </div>
                 </div>
-                <div class="d-flex justify-content-center">
-                <div class="col-3">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination" id="pagination"></ul>
-                      </nav>
-                </div>
-            </div>
+                
             </div>
         </div>
         
@@ -151,18 +152,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-     function generatePagination(numPages) {
+    const totalpages=document.getElementById('paginationsection').getAttribute('data-total');
+    function generatePagination(numPages) {
     const paginationContainer = document.getElementById('pagination');
     paginationContainer.innerHTML = ''; // Clear existing pagination links
 
     // Add page number links
     for (let i = 1; i <= numPages; i++) {
-      paginationContainer.innerHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+      paginationContainer.innerHTML += `<li class="page-item d-flex" data-page="${i}"><a class="page-link" href="#" >${i}</a></li>`;
     }
   }
-  let pages =9
-  generatePagination(pages);
   
+  generatePagination(totalpages);
+  const pagebtns=Array.from(document.getElementsByClassName('page-item'));
+  console.log(pagebtns)
+  let page;
+
+  pagebtns.forEach(i=>{
+    i.addEventListener('click',function(){
+        page=this.getAttribute('data-page');
+        window.location.href=`/admin/orders?page=${page}`;
+           })
+  })
 </script>
 
 
@@ -191,10 +202,8 @@
         }
     }
 
-    // Set the default tab to display on page load
     openTab(null, 'allorders');
 
-    // Event delegation for order detail buttons
     document.querySelector('.card-body').addEventListener('click', function(event) {
         if (event.target.classList.contains('orderdetailsbtns')) {
             const orderId = event.target.getAttribute('data-id');
@@ -267,9 +276,7 @@
         })
     })
    })
-    // console.log(returnApproveBtns);
-    // console.log(cancelDiscardBtns);
-
+   
 </script>
 
 </body>

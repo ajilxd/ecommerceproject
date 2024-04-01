@@ -18,6 +18,7 @@
                                 <small class="text-muted">Order ID: #<%=orderData.orderId%></small>
                             </div>
                             <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                                <%if(orderData.status!='pending'){%>
                                 <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200" id="statusSelect">
                                     <option value="">Change status</option>
                                     <option value="Pending" >Pending</option>
@@ -26,6 +27,7 @@
                                     <option value="Cancelled">Cancelled</option>
                                     <option value="Returned">Returned</option>
                                 </select>
+                                <%}%>
                                 <a class="btn btn-primary" id="saveButton"  data-id="<%=orderData.orderId%>" >Save</a>
                                 
                             </div>
@@ -130,9 +132,11 @@
                                                         </dl>
                                                         <dl class="dlist">
                                                             <dt class="text-muted">Status:</dt>
+                                                            
                                                             <dd>
                                                                 <span class="badge rounded-pill alert-success text-success"><%=orderData.status%></span>
                                                             </dd>
+                                                          
                                                         </dl>
                                                     </article>
                                                 </td>
