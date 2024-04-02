@@ -10,13 +10,16 @@ const profileLoader = async (req, res) => {
       userId: req.session.user._id,
     });
     const walletData = await walletModel.findOne({userId:req.session.user._id});
+    const {transaction}=walletData;
+    console.log(transaction);
     const userData = await userModel.findOne({ _id: req.session.user._id });
     // console.log("profileeeeeee", userData);
     res.render("userprofile", {
       userData,
       orderData: orderData,
       addressData,
-      walletData
+      walletData,
+      transaction
     });
   } catch (error) {
     console.log(error.message);

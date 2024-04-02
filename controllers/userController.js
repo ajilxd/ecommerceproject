@@ -634,9 +634,15 @@ const verifyWalletPaymentHandler =async(req,res)=>{
     //updating wallet
     const {amount}=req.body.order;
     const userId =req.session.user._id;
+    wallettranscation=
+    {
+      amount:amount*0.01,
+      mode:'Deposit',
+      date:Date.now(),
+    }
     await walletModel.updateOne(
       { userId: userId },
-      { $inc: { balance: amount / 100 } }, 
+      { $inc: { balance: amount / 100 },$push:{transaction:wallettranscation} }, 
       { upsert: true }
     );
     

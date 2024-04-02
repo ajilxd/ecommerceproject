@@ -27,9 +27,7 @@
                 <p>Sales report management</p>
             </div>
           
-            <div>
-                <input type="text" placeholder="Search by name" class="form-control bg-white" />
-            </div>
+           
         </div>
         <div class="card mb-4" >
             <header class="card-header">
@@ -100,17 +98,25 @@
                                         
                                         <%})%>
                                       
-                                            <td colspan="4"><span class="fw-bold">Summary</td>
-                                          </tr>
-                                          <tr>
-                                            <td colspan="2" ><span class="fw-bold">Total sales</span> = <%=overallData[0].totalSales%>₹</td>
-                                            <td colspan="2"><span class="fw-bold">Total sales amount</span>=<%=overallData[0].totalSalesAmount%>₹</td>
-                                            <td colspan="2"><span class="fw-bold">Total offer discount</span>=<%=overallData[0].totalOfferDiscount%>₹</td>
-                                            <td colspan="2"><span class="fw-bold">Total coupon discount</span> = <%=overallData[0].totalCouponDiscount%>₹</td>
-                                          </tr>
+                                          
 
                                     </tbody>
                                 </table>
+                               
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                      <span class="fw-bold">Total sales</span> = <%=overallData[0].totalSales%>₹
+                                    </div>
+                                    <div>
+                                      <span class="fw-bold">Total sales amount</span>=<%=overallData[0].totalSalesAmount%>₹
+                                    </div>
+                                    <div>
+                                      <span class="fw-bold">Total offer discount</span>=<%=overallData[0].totalOfferDiscount%>₹
+                                    </div>
+                                    <div>
+                                      <span class="fw-bold">Total coupon discount</span> = <%=overallData[0].totalCouponDiscount%>₹
+                                    </div>
+                                  </div>
                             </div>
                             <!-- table-responsive//end -->
                         

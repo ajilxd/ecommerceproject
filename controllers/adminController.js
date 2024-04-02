@@ -439,15 +439,24 @@ const cancelApprovedHandler = async (req, res) => {
       console.log('appuuuuu')
     const walletDataBase = await walletModel.findOne({userId:userId});
     console.log(walletDataBase);
+    const wallettranscation=
+    {
+      amount:orderDataBase.orderAmount,
+      mode:'Credit',
+      date:Date.now(),
+    }
     if(walletDataBase){
-      const updatedb=await walletModel.updateOne({userId:userId},{balance:walletDataBase.balance+orderDataBase.orderAmount
-      })
+    
+      const updatedb=await walletModel.updateOne({userId:userId},{balance:walletDataBase.balance+orderDataBase.orderAmount,$push:{transaction:wallettranscation}
+      },{upsert:true});
+      console.log(updatedb);
     }else{
-      const updatedb=await walletModel.updateOne({userId:userId},{balance:orderDataBase.orderAmount
+      const updatedb=await walletModel.updateOne({userId:userId},{balance:orderDataBase.orderAmount,$push:{transaction:wallettranscation}
       },{upsert:true})
+      console.log(updatedb);
     }
    
-    console.log(updatedb);
+    
     }
     res.json(true);
   } catch (error) {
@@ -476,9 +485,15 @@ const returnApprovedHandler = async (req, res) => {
     );
     const orderDataBase = await orderModel.findOne({
       orderId:orderId});
+      const wallettranscation=
+      {
+        amount:orderDataBase.orderAmount,
+        mode:'Credit',
+        date:Date.now(),
+      }
     const walletDataBase = await walletModel.findOne({userId:userId})
-    await walletModel.updateOne({userId:userId},{balance:walletDataBase.balance+orderDataBase.orderAmount
-    })
+    await walletModel.updateOne({userId:userId},{balance:walletDataBase.balance+orderDataBase.orderAmount,$push:{transaction: wallettranscation}
+    },{upsert:true})
     await requestModel.deleteOne({ _id: requestId });
     await notificationModel.updateOne(
       { userId: userId },

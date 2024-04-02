@@ -108,6 +108,14 @@
   line-height: 1rem;
   color: rgb(197, 194, 194);
 }
+
+#walletrow{
+            height: 400px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+#walletrow::-webkit-scrollbar {
+            width: 0;
+        }
     </style>
 <body>
     <div class="container-fluid">
@@ -324,6 +332,13 @@
 
             <!-- wallet  -->
             <div  id="walletdiv" class="content-item" style="display: none" >
+              <div class="my-3">
+                <button class="tablink btn btn-light" onclick="openTab(event, 'My-wallet')"  >My wallet</button>
+                <button class="tablink btn btn-light" onclick="openTab(event, 'wallet-history')">wallet history</button>
+               
+                </div>
+                <!-- my wallet -->
+              <div class="tab" id="My-wallet" style="display:none" class="mt-5 ms-3">
               <h4>my wallet</h4>
               <div class=" d-flex">
                 <div class="col-6 ">
@@ -356,7 +371,34 @@
                   </div>
                 </div>
               </div>
-             
+             </div>
+             <div class="tab" id="wallet-history" style="display:none" class="mt-5 ms-3">
+              <h4>wallet history</h4>
+              <div id="walletrow">
+              <table class="table">
+                <thead>
+                  <tr>
+                    
+                    <th scope="col">Date</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  <%transaction.map((i,index)=>{%>
+                  <tr>
+                  
+                    <td><%=i?.date.toISOString().split('T')[0]%></td>
+                    <td><%=i?.amount%></td>
+                    <td><%=i.mode%></td>
+                  </tr>
+                  <%})%>
+               
+                </tbody>
+              </table>
+            </div>
+              </div>
             </div>
 
             
