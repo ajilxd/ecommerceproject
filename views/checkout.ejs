@@ -209,8 +209,19 @@
 
 		                  <div class="collapse" id="collapsepaypal">
 		                    <div class="py-2">
-		                      
-							  <input type="checkbox" class="mt-4 inputcheck" value="wallet"><span class="mx-3">Pay via wallet</span>
+		                      <%if(walletData.balance> sumOfAllProducts){%>
+								<div class="d-flex justify-content-between">
+							<div>
+							  <input type="checkbox" id= walletcheck" class="mt-4 inputcheck" value="wallet"><span class="mx-3">Pay via wallet</span>
+							</div>
+							  <div>
+							  <div><span class="  m-5">Wallet balance</span><span class="text-success "><%=walletData.balance%></div>
+							  <div><span class="  mx-5">After payment</span><span class=""><%=walletData.balance- sumOfAllProducts%>₹</span></div>
+							  </div>
+							</div>
+							  <%}else{%>
+								<p class="text-danger">Insufficient wallet balance</p>
+							  <%}%>
 		                    </div>
 		                  </div>
 		                </div>

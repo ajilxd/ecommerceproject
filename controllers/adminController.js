@@ -436,7 +436,6 @@ const cancelApprovedHandler = async (req, res) => {
     console.log('order',orderDataBase)
     console.log(orderDataBase.payment);
     if(orderDataBase.payment=='online'){
-      console.log('appuuuuu')
     const walletDataBase = await walletModel.findOne({userId:userId});
     console.log(walletDataBase);
     const wallettranscation=
@@ -457,6 +456,26 @@ const cancelApprovedHandler = async (req, res) => {
     }
    
     
+    }else if(orderDataBase.payment=='wallet'){
+      
+      const walletDataBase = await walletModel.findOne({userId:userId});
+      console.log(walletDataBase);
+      const wallettranscation=
+      {
+        amount:orderDataBase.orderAmount,
+        mode:'Credit',
+        date:Date.now(),
+      }
+      if(walletDataBase){
+      
+        const updatedb=await walletModel.updateOne({userId:userId},{balance:walletDataBase.balance+orderDataBase.orderAmount,$push:{transaction:wallettranscation}
+        },{upsert:true});
+        console.log(updatedb);
+      }else{
+        const updatedb=await walletModel.updateOne({userId:userId},{balance:orderDataBase.orderAmount,$push:{transaction:wallettranscation}
+        },{upsert:true})
+        console.log(updatedb);
+      }
     }
     res.json(true);
   } catch (error) {

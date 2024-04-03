@@ -4,12 +4,12 @@ const productModel = require("../models/productModel");
 const userModel = require("../models/userModel");
 const orderModel = require("../models/orderModel");
 const couponModel = require("../models/couponModel");
-
-
-
+const walletModel = require("../models/walletModel")
 
 
 const {generateRazorpay} =require("../middleware/razorpay")
+
+
 const cartLoader = async (req, res) => {
   try {
     const userData = await userModel.find({ email: req.session?.user?.email });
@@ -71,7 +71,7 @@ const addtocartProductDetailsHandler = async (req, res) => {
       return res.json("nosession");
     }
     const productData = await productModel.findOne({ _id: productId });
-    console.log(productData);
+    // console.log(productData);
     if (true) {
       const Cartdb = new cartModel({
         productId: productId,
@@ -109,7 +109,7 @@ const quantityUpdate = async (req, res) => {
       return res.json("nostock");
     }
     const totalsum = Chngquantity * cartData.price;
-    console.log("totalsum", totalsum);
+    // console.log("totalsum", totalsum);
     await cartModel.updateOne(
       { _id: cartId },
       { $set: { quantity: Chngquantity, totals: totalsum } }
@@ -120,7 +120,7 @@ const quantityUpdate = async (req, res) => {
       (total, cart) => total + cart.totals,
       0
     );
-    console.log(sumOfAllProducts);
+    // console.log(sumOfAllProducts);
     await userModel.updateOne(
       { _id: userId },
       { $set: { totalcart: sumOfAllProducts } }
@@ -149,6 +149,7 @@ const checkOutLoader = async (req, res) => {
     const cartData = await cartModel
       .find({ userId: req.session.user._id })
       .populate("productId");
+    const walletData = await walletModel.findOne({userId:req.session?.user?._id});
     // const userData = await userModel.findOne({ _id: req.session.user._id });
     const cartDocs = await cartModel.find({});
     const sumOfAllProducts = cartDocs.reduce(
@@ -165,7 +166,8 @@ const checkOutLoader = async (req, res) => {
       addressData,
       userData,
       sumOfAllProducts,
-      couponData
+      couponData,
+      walletData
     });
   } catch (error) {
     console.log(error.message);
@@ -176,10 +178,10 @@ const placeorderdb = async (req, res) => {
   try {
     console.log('req body at place order',req.body);
     const {couponcode} =req.body.formData;
-    console.log('coupon code is',couponcode)
+    // console.log('coupon code is',couponcode)
     const cartData = await cartModel.find({ userId: req.session?.user?._id });
     const couponData =await couponModel.findOne({code:couponcode});
-    console.log(couponData);
+    // console.log(couponData);
     // stock management
     for (cartitem of cartData) {
       await productModel.updateOne(
@@ -208,6 +210,7 @@ const placeorderdb = async (req, res) => {
     // console.log(cartData);
     const orderid = String(Math.floor(Math.random() * 10000000000));
     const paymenttype = req.body.formData.paymenttype ;
+    console.log( 'payment:',paymenttype);
     const addressid = req.body.formData.addressId;
     const userId = req.session.user._id;
     let totalAmount = 0;
@@ -231,6 +234,8 @@ const placeorderdb = async (req, res) => {
       offerDiscount:totalOfferDiscount||0
     });
     await orderData.save();
+    const newOrderData =await orderModel.findOne({orderId:orderid});
+    console.log('order-data',newOrderData)
     await cartModel.deleteMany({ userId: userId });
     //updating coupon
     if(couponData){
@@ -239,6 +244,7 @@ const placeorderdb = async (req, res) => {
   }
     await userModel.updateOne({ _id: userId }, { $set: { totalcart: 0 } });
     req.session.user.order = orderData;
+    
     if(paymenttype=='online'){
       try{
         generateRazorpay(orderid,totalAmount).then(data=>{
@@ -249,9 +255,13 @@ const placeorderdb = async (req, res) => {
       }catch(error){
         console.log(error.message);
       }
+    }else if(paymenttype=='wallet'){
+      await walletModel.updateOne({userId:req.session?.user?._id},{$inc:{balance:-totalAmount}});
+      await orderModel.updateOne({orderId:orderid},{$set:{status:'placed'}});
+      res.json(true);
     }else{
-     const ordercoddata= await orderModel.updateOne({orderId:orderid},{$set:{status:'placed'}});
-      console.log(ordercoddata);
+      await orderModel.updateOne({orderId:orderid},{$set:{status:'placed'}});
+      // console.log(ordercoddata);
       res.json(true);
     }
    

@@ -463,7 +463,11 @@ const cancelOrder = async (req, res) => {
       userId: userid,
       orderId: orderid,
     });
+    try{
     await cancelData.save();
+    }catch(error){
+      res.json(false)
+    }
     res.json(true);
   } catch (error) {
     console.log(error.message);

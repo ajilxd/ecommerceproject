@@ -659,6 +659,9 @@
           if(response.data===true){
             notyf.success('Request has been sent !!')
             closeCancelModal();
+          }else{
+            notyf.error('Try after sometime');
+            closeCancelModal();
           }
         }).catch((error)=>{
           console.log(error.message);
