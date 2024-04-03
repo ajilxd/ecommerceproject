@@ -605,6 +605,11 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/notyf@3"></script>
 <script>
+  // By default, display the first tab
+  window.onload=function(){
+        document.getElementById('yourOrders').style.display = "block";
+        document.getElementById('My-wallet').style.display = "block"
+    }
  const notyf = new Notyf({
         position: {
             x: 'right',
@@ -614,7 +619,7 @@
  function openCancelModal() {
       document.getElementById('cancelModal').classList.add('is-active');
   }
-
+  
  
   function closeCancelModal() {
       document.getElementById('cancelModal').classList.remove('is-active');
@@ -911,10 +916,7 @@ document.getElementById('editaddresssubmit').addEventListener('click',function()
         evt.currentTarget.className += " active";
     }
 
-    // By default, display the first tab
-    window.onload=function(){
-        document.getElementsByClassName("tab")[0].style.display = "block"
-    }
+    
 
     
 // order payments

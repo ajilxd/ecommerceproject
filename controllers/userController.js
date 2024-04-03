@@ -526,7 +526,7 @@ const wishlistloader = async (req, res) => {
     const data = await wishlistModel
       .findOne({ userId: req.session.user._id })
       .populate("product");
-    console.log("WISHLIST", data);
+   
     res.render("wishlist", { wishlistData: data, userData });
   } catch (error) {
     console.log(error.message);
@@ -616,13 +616,7 @@ const addToWalletHandler =async (req,res)=>{
   }
 }
 
-const addWalletDatabase=async(req,res)=>{
-  try{
-    
-  }catch(error){
-    console.log(error.message);
-  }
-}
+
 
 
 const verifyWalletPaymentHandler =async(req,res)=>{
