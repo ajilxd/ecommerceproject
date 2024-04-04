@@ -12,7 +12,8 @@ const reviewModel = require("../models/reviewModel");
 const { request } = require("express");
 const CouponModel = require("../models/couponModel");
 const offerModel =require("../models/offerModel");
-const walletModel=require("../models/walletModel")
+const walletModel=require("../models/walletModel");
+const ExcelJS =require('exceljs');
 const adminLoginLoader = async (req, res) => {
   try {
     res.render("adminlogin");
@@ -1019,6 +1020,206 @@ const customsalesreport =async (req,res)=>{
   }
 }
 
+const generateExcelExportWeekly =async(req,res)=>{
+  try{
+    const weeklyData =await  orderModel.aggregate([
+    
+      {
+        $group: {
+          _id: { $week: "$createdAt" },
+          totalSales: { $sum: 1 },
+          totalSalesAmount: { $sum: "$orderAmount" },
+          totalOfferDiscount: { $sum: "$offerDiscount" },
+          totalCouponDiscount:{$sum:"$couponDiscount"}
+        }
+      },
+      { $sort: { _id: 1 } }
+    ])
+     // Create a new Excel workbook
+     const workbook = new ExcelJS.Workbook();
+     const worksheet = workbook.addWorksheet('Sheet 1');
+ 
+     // Add headers
+     const headers = Object.keys( weeklyData[0]);
+     worksheet.addRow(headers);
+ 
+     // Add data rows
+     weeklyData.forEach(item => {
+         const values = Object.values(item);
+         worksheet.addRow(values);
+     });
+ 
+     // Set response headers
+     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+     res.setHeader('Content-Disposition', 'attachment; filename="data.xlsx"');
+
+     workbook.xlsx.write(res)
+     .then(() => {
+         res.end();
+     })
+     .catch(err => {
+         console.error('Error generating Excel:', err);
+         res.status(500).send('Error generating Excel');
+     });
+ 
+  }catch(error){
+    console.log(error);
+  }
+}
+
+const generateExcelExportMonthly =async(req,res)=>{
+  try{
+    const monthlyData =await  orderModel.aggregate([
+    
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalSales: { $sum: 1 },
+          totalSalesAmount: { $sum: "$orderAmount" },
+          totalOfferDiscount: { $sum: "$offerDiscount" },
+          totalCouponDiscount:{$sum:"$couponDiscount"}
+        }
+      },
+      { $sort: { _id: 1 } }
+    ])
+     // Create a new Excel workbook
+     const workbook = new ExcelJS.Workbook();
+     const worksheet = workbook.addWorksheet('Sheet 1');
+ 
+     // Add headers
+     const headers = Object.keys( monthlyData[0]);
+     worksheet.addRow(headers);
+ 
+     // Add data rows
+     monthlyData.forEach(item => {
+         const values = Object.values(item);
+         worksheet.addRow(values);
+     });
+ 
+     // Set response headers
+     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+     res.setHeader('Content-Disposition', 'attachment; filename="data.xlsx"');
+
+     workbook.xlsx.write(res)
+     .then(() => {
+         res.end();
+     })
+     .catch(err => {
+         console.error('Error generating Excel:', err);
+         res.status(500).send('Error generating Excel');
+     });
+ 
+  }catch(error){
+    console.log(error);
+  }
+}
+
+const generateExcelExportYearly =async(req,res)=>{
+  try{
+    const yearlyData =await  orderModel.aggregate([
+    
+      {
+        $group: {
+          _id: { $year: "$createdAt" },
+          totalSales: { $sum: 1 },
+          totalSalesAmount: { $sum: "$orderAmount" },
+          totalOfferDiscount: { $sum: "$offerDiscount" },
+          totalCouponDiscount:{$sum:"$couponDiscount"}
+        }
+      },
+      { $sort: { _id: 1 } }
+    ])
+  
+     // Create a new Excel workbook
+     const workbook = new ExcelJS.Workbook();
+     const worksheet = workbook.addWorksheet('Sheet 1');
+ 
+     // Add headers
+     const headers = Object.keys( yearlyData[0]);
+     worksheet.addRow(headers);
+ 
+     // Add data rows
+     yearlyData.forEach(item => {
+         const values = Object.values(item);
+         worksheet.addRow(values);
+     });
+ 
+     // Set response headers
+     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+     res.setHeader('Content-Disposition', 'attachment; filename="data.xlsx"');
+
+     workbook.xlsx.write(res)
+     .then(() => {
+         res.end();
+     })
+     .catch(err => {
+         console.error('Error generating Excel:', err);
+         res.status(500).send('Error generating Excel');
+     });
+ 
+  }catch(error){
+    console.log(error);
+  }
+}
+
+const generateExcelExportDaily =async(req,res)=>{
+  try{
+    const dailyData = await orderModel.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          totalSales: { $sum: 1 },
+          totalSalesAmount: { $sum: "$orderAmount" },
+          totalOfferDiscount: { $sum: "$offerDiscount" },
+          totalCouponDiscount: { $sum: "$couponDiscount" }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ])
+  
+     // Create a new Excel workbook
+     const workbook = new ExcelJS.Workbook();
+     const worksheet = workbook.addWorksheet('Sheet 1');
+ 
+     // Add headers
+     const headers = Object.keys( dailyData[0]);
+     worksheet.addRow(headers);
+ 
+     // Add data rows
+     dailyData.forEach(item => {
+         const values = Object.values(item);
+         worksheet.addRow(values);
+     });
+ 
+     // Set response headers
+     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+     res.setHeader('Content-Disposition', 'attachment; filename="data.xlsx"');
+
+     workbook.xlsx.write(res)
+     .then(() => {
+         res.end();
+     })
+     .catch(err => {
+         console.error('Error generating Excel:', err);
+         res.status(500).send('Error generating Excel');
+     });
+ 
+  }catch(error){
+    console.log(error);
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 module.exports = {
@@ -1063,5 +1264,9 @@ module.exports = {
   salesReportLoader,
   excelGenerator,
   pdfGenerator,
-  customsalesreport
+  customsalesreport,
+  generateExcelExportWeekly,
+  generateExcelExportYearly,
+  generateExcelExportMonthly,
+  generateExcelExportDaily,
 };

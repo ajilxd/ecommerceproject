@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orders Dashboard</title>
-<style>
-    /* Add your CSS styles here */
 </style>
 </head>
 <body>
@@ -17,8 +15,22 @@
     <%- include("./partials/nav.ejs")%>
     <section class="content-main">
         <div class="d-flex justify-content-end">
-        <button id="generatePDF" class="btn btn-sm btn-success mx-4 text-white">Generate PDF</button>
-        <button id="generateExcel"  class="btn btn-sm btn-success text-white" >Generate Excel</button>
+       
+        <!-- Example single danger button -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-success dropdown-toggle text-white" data-toggle="dropdown" >
+                Excel export
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item"  id="generateExcel" >All</a>
+                <a class="dropdown-item" href="/admin/dailyexcel">Daily</a>
+                <a class="dropdown-item" href="/admin/weekexcel">Weekly</a>
+                <a class="dropdown-item" href="/admin/monthexcel">Monthly</a>
+                <a class="dropdown-item" href="/admin/yearexcel">Yearly</a>
+            </div>
+            <button id="generatePDF" class="btn btn-sm btn-success mx-4 text-white">Generate PDF</button>
+        </div>
+        
         
          </div>
         <div class="content-header">
@@ -351,6 +363,10 @@
     </section>
     <%- include("./partials/footer.ejs")%>
 </main>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

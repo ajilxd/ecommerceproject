@@ -1,201 +1,51 @@
-<%- include("./header.ejs")%>
-<%- include("./partials/navbar.ejs")%>
-
-<style>
-    .height-100 {
-    height: 100vh
-}
-
-.card {
-    width: 400px;
-    border: none;
-    height: 300px;
-    box-shadow: 0px 5px 20px 0px #d2dae3;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center
-}
-
-.card h6 {
-    color: red;
-    font-size: 20px
-}
-
-.inputs input {
-    width: 40px;
-    height: 40px
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0
-}
-
-.card-2 {
-    background-color: #fff;
-    padding: 10px;
-    width: 350px;
-    height: 100px;
-    bottom: -50px;
-    left: 20px;
-    position: absolute;
-    border-radius: 5px
-}
-
-.card-2 .content {
-    margin-top: 50px
-}
-
-.card-2 .content a {
-    color: red
-}
-
-.form-control:focus {
-    box-shadow: none;
-    border: 2px solid red
-}
-
-.validate {
-    border-radius: 20px;
-    height: 40px;
-    background-color: red;
-    border: 1px solid red;
-    width: 140px
-}
-</style>
-<div class="container is-flex is-align-items-center is-justify-content-center" style="height: 600px;">
-    <form action="/otp" method="post" id="otpform">
-        <div class="container height-100 d-flex justify-content-center align-items-center">
-            <div class="position-relative">
-                <div class="card p-2 text-center">
-                    <h6 class="text-primary ">Please enter the one time password <br> to verify your account</h6>
-                    <div> <span>A code has been sent to</span> <small>*******9897</small> </div>
-                    <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2"> 
-                    <input class="m-2 text-center form-control rounded otpinput" type="text" id="first" name="one" maxlength="1" />
-                    <input class="m-2 text-center form-control rounded otpinput" type="text" id="second" name="two" maxlength="1" />
-                    <input class="m-2 text-center form-control rounded otpinput" type="text" id="third" name="three" maxlength="1" />
-                    <input class="m-2 text-center form-control rounded otpinput" type="text" id="fourth" name="four" maxlength="1" />
-                    <input class="m-2 text-center form-control rounded otpinput" type="text" id="fifth" name="five" maxlength="1" />
-                    <input class="m-2 text-center form-control rounded otpinput" type="text" id="sixth" name="six" maxlength="1" />
-                    </div>
-                    <div class="mt-4"> <button class="button is-primary" id="submitOtpBtn" type="submit" >Validate</button> </div>
-                    <div id="errorMessage" class="mt-3 text-danger "></div>
-                    <div id="otpTimer" class="has-text-centered mt-3"></div>
-                </div>
-            </div>
+ <h2 class="h5 ms-3">Your Orders</h2>
+    <%orderData.forEach(i=>{%>
+    <div class="card">
+        <div class="card-body">
+          <div class="is-flex justify-content-evenly ">
+            <p class="text-muted">Order placed -<%=i.createdAt.toISOString().split('T')[0]%></p>
+            <p class="text-muted">Totals -<%=i.orderAmount%>/-</p>
+            <p class="text-muted">Pincode - 673591 </p>
+            <p class="text-muted">#<%= i.orderId %></p>
+          </div>
+          <div class="is-flex justify-content-evenly mt-3">
+            <%i.orderedItems.forEach(i=>{%>
+              <table>
+                <tr>
+                  <td> <img src="/multer/products/<%= i.image %>" alt="" class="img-fluid" style="max-height:100px;"></td>
+                  <td> <%= i.productname %></p></td>
+                  <td><%= i.quantity %></td>
+                </tr>
+              
+            <%})%>
         </div>
-    </form>
-</div>
-<%- include("./footer.ejs")%>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-<script>
-     var notyf = new Notyf();
-    document.addEventListener("DOMContentLoaded", function(event) {
-        // OTP input fields
-        const first = document.getElementById('first');
-        const second = document.getElementById('second');
-        const third = document.getElementById('third');
-        const fourth = document.getElementById('fourth');
-        const fifth = document.getElementById('fifth');
-        const sixth = document.getElementById('sixth');
-
-        const errorMessage = document.getElementById('errorMessage');
-
-        function OTPInput() {
-            const inputs = document.querySelectorAll('#otp > *[id]');
-
-            for (let i = 0; i < inputs.length; i++) {
-                inputs[i].addEventListener('input', function(event) {
-                    if (event.inputType === 'deleteContentBackward' && i !== 0) {
-                        inputs[i - 1].focus();
-                    } else if (event.inputType === 'insertText') {
-                        if (i < inputs.length - 1) {
-                            inputs[i + 1].focus();
-                        }
-                    }
-                });
-            }
-        }
-
-        OTPInput();
-
-        const form = document.getElementById('otpform');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            let allNums = true;
-            document.querySelectorAll('.otpinput').forEach(input => {
-                if (isNaN(Number(input.value))) {
-                    allNums = false;
-                }
-            });
-
-            if (!allNums) {
-                errorMessage.textContent = "Enter numbers only";
-                setTimeout(function() {
-                    errorMessage.textContent = "";
-                }, 3000);
-                return;
-            }
-
-            const firstValue = first.value;
-            const secondValue = second.value;
-            const thirdValue = third.value;
-            const fourthValue = fourth.value;
-            const fifthValue = fifth.value;
-            const sixthValue = sixth.value;
-
-            if (firstValue && secondValue && thirdValue && fourthValue && fifthValue && sixthValue) {
-                axios.post('/otp', {
-                    first: firstValue,
-                    second: secondValue,
-                    third: thirdValue,
-                    fourth: fourthValue,
-                    fifth: fifthValue,
-                    sixth: sixthValue
-                })
-                .then((response) => {
-                    console.log(response.data);
-                    if(response.data===true){
-                        notyf.success('Your account has been created!');
-                        clearInterval(countdown);
-                        document.getElementById('otpTimer').textContent='Your account has been created!'
-                        setTimeout(function(){
-                            window.location.href='/login'
-                        },4000)
-
-                    }else if(response.data===false){
-                        document.getElementById('otpTimer').textContent='invalid otp!'
-                    }
-                })
-                .catch((error) => {
-                    console.log(error.message);
-                });
-            } else {
-                errorMessage.textContent = "OTP fields can't be empty";
-                setTimeout(function() {
-                    errorMessage.textContent = "";
-                }, 3000);
-            }
-        });
-
-        // Simple countdown timer for 60 seconds
-        let timer = 60;
-        const countdown = setInterval(() => {
-            document.getElementById('otpTimer').textContent = timer;
-            timer--;
-
-            if (timer < 0) {
-                clearInterval(countdown);
-                document.getElementById('otpTimer').textContent='otp expired'
-            }
-        }, 1000);
-    });
-
-</script>
+      </div>
+            <div class="col-2">
+              <p class="text-success h4"><%= i.status %></p>
+              <%if(i.status=='pending'){%>
+              <button class="btn btn-primary btn-lg my-3 paybtns" data-id="<%=i.orderId%>" data-amount="<%=i.orderAmount%>">Pay</button>
+              <%}%>
+              <!-- check whether status is delivered or not -->
+              <%notDelivered = i.status!=='Delivered'%>
+              <%notCancelled = i.status!=='Cancelled'%>
+              <%notReturned = i.status !=='Returned'%>
+              <!-- Calculate 10 days + createdAt date of order -->
+              <% var datePlus10Days = new Date(i.createdAt); %>
+              <% datePlus10Days.setDate(datePlus10Days.getDate() + 10); %>
+              <% var validReturnPeriod = datePlus10Days.toISOString().split('T')[0]; %>
+              <!-- Get current date -->
+              <% var currentDate = new Date().toISOString().split('T')[0]; %>
+              <!-- Check if current date is less than or equal to valid return period, allow return -->
+              <% if (currentDate >= validReturnPeriod || !notDelivered) { %>
+                  <button class="btn btn-warning returnmodalbtns" data-id="<%=i.orderId%>" >Return</button>
+              <% } %>
+              <% if (notDelivered&&notCancelled&&notReturned){%>
+                <button class="btn btn-danger cancelmodalbtns"  data-id="<%=i.orderId%>">Cancel</button>
+              <%}%>
+          </div>
+          
+        </div>
+        
+       
+      
+      <%})%>

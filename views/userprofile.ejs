@@ -116,6 +116,164 @@
 #walletrow::-webkit-scrollbar {
             width: 0;
         }
+
+        /* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Order Section */
+#yourOrders {
+  margin-top: 2rem;
+}
+
+/* Order Card */
+.order-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Order Header */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.order-header p {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Order Items */
+.order-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.order-item-image {
+  max-height: 80px;
+  margin-right: 0.5rem;
+}
+
+.order-item-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-item-name {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.order-item-quantity {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Order Actions */
+
+
+.order-status {
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.order-status.pending {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.order-status.delivered {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.order-status.cancelled {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.order-status.returned {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+
+/* Order Actions */
+.order-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Pay Button */
+.paybtns {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.paybtns:hover {
+  background-color: #218838;
+}
+
+/* Return Button */
+.returnmodalbtns {
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.returnmodalbtns:hover {
+  background-color: #e0a800;
+}
+
+/* Cancel Button */
+.cancelmodalbtns {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.cancelmodalbtns:hover {
+  background-color: #c82333;
+}
     </style>
 <body>
     <div class="container-fluid">
@@ -474,60 +632,54 @@
                     <button class="tablink btn btn-light" onclick="openTab(event, 'cancelledOrders')">Cancelled Orders</button>
                     <button class="tablink btn  btn-light" onclick="openTab(event, 'returnedOrders')">Returned Orders</button>
                     </div>
-<div class="tab" id="yourOrders" style="display:none" class="mt-5 ms-3">
-    <h2 class="h5 ms-3">Your Orders</h2>
-    <%orderData.forEach(i=>{%>
-    <div class="card">
-        <div class="card-body">
-          <div class="is-flex justify-content-evenly ">
-            <p class="text-muted">Order placed -<%=i.createdAt%></p>
-            <p class="text-muted">Totals -<%=i.orderAmount%>/-</p>
-            <!-- <p class="text-muted">Ship to - ajil</p> -->
-            <p class="text-muted">Pincode - 673591 </p>
-          </div>
-          <div class="is-flex justify-content-evenly mt-3">
-            <div class="col-3">
-                <img src="/multer/products/<%= i.orderedItems[0]?.image %>" alt="" class="img-fluid" style="max-height:100px;">
-            </div>
-            <div class="col-5">
-                <p class="lead fw-bold">
-                    <% i.orderedItems.forEach(item => { %>
-                        <span><%= item.productname %>,</span>
-                    <% }) %>
-                </p>
-                <p class="fw-bold">Quantity</p>
-                <p class="fw-bold">#<%= i.orderId %></p>
-            </div>
-            <div class="col-2">
-              <p class="text-success h4"><%= i.status %></p>
-              <%if(i.status=='pending'){%>
-              <button class="btn btn-primary btn-lg my-3 paybtns" data-id="<%=i.orderId%>" data-amount="<%=i.orderAmount%>">Pay</button>
-              <%}%>
-              <!-- check whether status is delivered or not -->
-              <%notDelivered = i.status!=='Delivered'%>
-              <%notCancelled = i.status!=='Cancelled'%>
-              <%notReturned = i.status !=='Returned'%>
-              <!-- Calculate 10 days + createdAt date of order -->
-              <% var datePlus10Days = new Date(i.createdAt); %>
-              <% datePlus10Days.setDate(datePlus10Days.getDate() + 10); %>
-              <% var validReturnPeriod = datePlus10Days.toISOString().split('T')[0]; %>
-              <!-- Get current date -->
-              <% var currentDate = new Date().toISOString().split('T')[0]; %>
-              <!-- Check if current date is less than or equal to valid return period, allow return -->
-              <% if (currentDate >= validReturnPeriod || !notDelivered) { %>
-                  <button class="btn btn-warning returnmodalbtns" data-id="<%=i.orderId%>" >Return</button>
-              <% } %>
-              <% if (notDelivered&&notCancelled&&notReturned){%>
-                <button class="btn btn-danger cancelmodalbtns"  data-id="<%=i.orderId%>">Cancel</button>
-              <%}%>
-          </div>
-          
-        </div>
-        
-        </div>
-      </div>
-      <%})%>
-</div>
+                    <div class="tab" id="yourOrders">
+                      <h2 class="h5 ms-3">Your Orders</h2>
+                      <% orderData.forEach(order => { %>
+                        <div class="order-card">
+                          <div class="order-header d-flex">
+                            <p class="order-date">Order placed - <%= order.createdAt.toISOString().split('T')[0] %></p>
+                            <p class="order-total">Totals - <%= order.orderAmount %>/-</p>
+                            <p class="order-pincode">Pincode - 673591</p>
+                            <p class="order-id">#<%= order.orderId %></p>
+                          </div>
+                          <div class="order-items">
+                            <% order.orderedItems.forEach(item => { %>
+                              <div class="order-item">
+                                <img src="/multer/products/<%= item.image %>" alt="<%= item.productname %>" class="order-item-image">
+                                <div class="order-item-details">
+                                  <h3 class="order-item-name"><%= item.productname %></h3>
+                                  <p class="order-item-quantity">Quantity: <%= item.quantity %></p>
+                                </div>
+                              </div>
+                            <% }) %>
+                          </div>
+                          <div class="order-actions">
+                            <p class="order-status <%= order.status.toLowerCase() %>"><%= order.status %></p>
+                            <!-- ... (existing order action buttons) ... -->
+                            <%if(order.status=='pending'){%>
+                              <button class="paybtns" data-id="<%=order.orderId%>" data-amount="<%=order.orderAmount%>">Pay</button>
+                              <%}%>
+                              <!-- check whether status is delivered or not -->
+                              <%notDelivered = order.status!=='Delivered'%>
+                              <%notCancelled = order.status!=='Cancelled'%>
+                              <%notReturned = order.status !=='Returned'%>
+                              <!-- Calculate 10 days + createdAt date of order -->
+                              <% var datePlus10Days = new Date(order.createdAt); %>
+                              <% datePlus10Days.setDate(datePlus10Days.getDate() + 10); %>
+                              <% var validReturnPeriod = datePlus10Days.toISOString().split('T')[0]; %>
+                              <!-- Get current date -->
+                              <% var currentDate = new Date().toISOString().split('T')[0]; %>
+                              <!-- Check if current date is less than or equal to valid return period, allow return -->
+                              <% if (currentDate >= validReturnPeriod || !notDelivered) { %>
+                                  <button class="returnmodalbtns" data-id="<%=order.orderId%>" >Return</button>
+                              <% } %>
+                              <% if (notDelivered&&notCancelled&&notReturned){%>
+                                <button class="cancelmodalbtns"  data-id="<%=order.orderId%>">Cancel</button>
+                              <%}%>
+                          </div>
+                        </div>
+                      <% }) %>
+                    </div>
 
 <div class="tab" id="cancelledOrders" style="display:none" class="mt-5 ms-3">
     <h2 class="h5 ms-3">Cancelled Orders</h2>

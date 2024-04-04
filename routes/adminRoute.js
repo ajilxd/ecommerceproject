@@ -79,4 +79,8 @@ adminRoute.get("/salesreport",isAdminLogin,adminController.salesReportLoader);
 adminRoute.post('/generate-pdf',adminController.pdfGenerator)
 adminRoute.post('/generate-excel',adminController.excelGenerator)
 adminRoute.post('/customsalesreport',adminController.customsalesreport);
+adminRoute.get('/weekexcel',adminController.generateExcelExportWeekly);
+adminRoute.get('/monthexcel',adminController.generateExcelExportMonthly);
+adminRoute.get('/yearexcel',adminController.generateExcelExportYearly);
+adminRoute.get('/dailyexcel',adminController.generateExcelExportDaily);
 module.exports = adminRoute;

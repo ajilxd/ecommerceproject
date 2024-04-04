@@ -257,6 +257,24 @@ const placeorderdb = async (req, res) => {
       }
     }else if(paymenttype=='wallet'){
       await walletModel.updateOne({userId:req.session?.user?._id},{$inc:{balance:-totalAmount}});
+      const walletDataBase = await walletModel.findOne({userId:userId});
+   
+      const wallettranscation=
+                  {
+                    amount:totalAmount,
+                    mode:'Debit',
+                    date:Date.now(),
+                  }
+     if(walletDataBase){
+    
+      const updatedb=await walletModel.updateOne({userId:userId},{$push:{transaction:wallettranscation}
+      },{upsert:true});
+      console.log(updatedb);
+    }else{
+      const updatedb=await walletModel.updateOne({userId:userId},{$push:{transaction:wallettranscation}
+      },{upsert:true})
+      console.log(updatedb);
+    }
       await orderModel.updateOne({orderId:orderid},{$set:{status:'placed'}});
       res.json(true);
     }else{
