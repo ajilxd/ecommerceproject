@@ -6,6 +6,7 @@ const {
   editPasswordSchema,
   changePasswordSchema,
 } = require("../helpers/valiadator");
+const puppeteer = require('puppeteer');
 const User = require("../models/userModel");
 const { hashPassword, comparePasswords } = require("../middleware/bcrypt");
 const Address = require("../models/addressModel");
@@ -665,12 +666,30 @@ const searchProducts =async(req,res)=>{
 }
 
 
+const invoiceloader =async (req,res)=>{
+  try{
+    invoiceid=Math.floor(Math.random()*100000000);
+    date=new Date().toISOString().split('T')[0];
+    console.log(invoiceid,date);
+    const id =req.query.orderid;
+    orderdata= await orderModel.findOne({_id:id}).populate('deliveryAddress');
+    console.log(orderdata)
+    res.render('invoice',{orderdata,date,invoiceid})
+}catch(error){
+  console.log(error);
+}
+}
 
-
-
-
-
-
+const invoicepdfdownload = async (req, res) => {
+  try {
+   const browser = await puppeteer.launch();
+   const page = await browser.newPage();
+   await page.goto(`${req.protocol}://${req.get('host')}`) 
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Error generating PDF');
+  }
+};
 module.exports = {
   loadHomepage,
   loadloginpage,
@@ -703,5 +722,7 @@ module.exports = {
   couponVerifier,
   addToWalletHandler,
   verifyWalletPaymentHandler,
-  searchProducts
+  searchProducts,
+  invoiceloader,
+  invoicepdfdownload
 };

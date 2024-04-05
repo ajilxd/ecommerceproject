@@ -44,7 +44,41 @@ const verifyAdminLogin = async (req, res) => {
 
 const adminHomeLoader = async (req, res) => {
   try {
-    res.render("adminhome");
+    const monthlyData =await  orderModel.aggregate([
+    
+      {
+        $group: {
+          _id: { $month: new Date() },
+          totalSales: { $sum: 1 },
+          totalSalesAmount: { $sum: "$orderAmount" },
+          totalOfferDiscount: { $sum: "$offerDiscount" },
+          totalCouponDiscount:{$sum:"$couponDiscount"}
+        }
+      }
+      
+    ])
+    const overallData = await orderModel.aggregate([
+      {
+        $group: {
+          _id: "",
+          totalSales: { $sum: 1 }, 
+          totalSalesAmount: { $sum: "$orderAmount" }, 
+          totalOfferDiscount: { $sum: "$offerDiscount" }, 
+          totalCouponDiscount: { $sum: "$couponDiscount" } 
+        }
+      }
+    ])
+    const totalOrders=await orderModel.find({}).countDocuments();
+    const monthsalesrevenue =monthlyData[0].totalSalesAmount;
+    const totalsales=overallData[0].totalSales;
+    const totalproductscount = await productModel.find({}).countDocuments();
+    const totalcategorycount =await categoryModel.find({}).countDocuments();
+    const totalrevenue=overallData[0].totalSalesAmount
+    console.log(totalproductscount ,'total no of products');
+    console.log(monthsalesrevenue,'monthly sales amount');
+    console.log(overallData[0].totalSales,'total sales')
+    
+    res.render("adminhome",{monthsalesrevenue,totalsales,totalproductscount,totalrevenue,totalOrders,totalcategorycount});
   } catch (error) {
     console.log(error);
   }
@@ -1212,7 +1246,161 @@ const generateExcelExportDaily =async(req,res)=>{
 }
 
 
-
+const saleGraphData =async (req,res)=>{
+  try{
+    console.log(req.body)
+    let salesData =
+    {
+        "labels": [],
+        "salesData": [],
+        "revenueData": [],
+        "productsData": []
+    }
+    const { filter, time } = req.body ;
+    if(filter === "monthly"){
+      salesData.labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const contraints = {
+          $gte: new Date(`${time}-01-01T00:00:00.000Z`),
+          $lte: new Date(`${time}-12-31T00:00:00.000Z`)            
+      }
+      const sales = await orderModel.aggregate([
+          {
+              $match: {
+                  createdAt: contraints
+              }
+          },
+          {
+              $group: {
+                  _id: {
+                      $month: "$createdAt"
+                  },
+                  revenueData: {
+                      $sum: "$orderAmount"
+                  },
+                  salesData: {
+                      $sum: 1
+                  }
+              }
+          },
+          {
+              $sort: {
+                  "_id": 1
+              }
+          }
+      ])
+      const products = await productModel.aggregate([
+        {
+            $match: {
+                createdAt: contraints
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    $month: "$createdAt"
+                },
+                productsData: {
+                    $sum: 1
+                }
+            }
+        },
+        {
+            $sort: {
+                "_id": 1 // Sort by month in ascending order
+            }
+        }
+    ])
+    salesData.salesData = sales.map((item) => item.salesData);
+    salesData.revenueData = sales.map((item) => item.revenueData/1000);
+    salesData.productsData = products.map((item) => item.productsData);
+    console.log(salesData)
+    }else{
+      console.log('else')
+      salesData.labels = [`${time-10}`, `${time-9}`, `${time-8}`, `${time-7}`, `${time-6}`, `${time-5}`, `${time-4}`, `${time-3}`, `${time-2}`, `${time-1}`, `${time}`];
+      const contraints = {
+          $gte: new Date(`${time-10}-01-01T00:00:00.000Z`),
+          $lte: new Date(`${time}-12-31T00:00:00.000Z`)            
+      }
+      const sales= await orderModel.aggregate([
+          {
+              $match: {
+                  createdAt: contraints
+              }
+          },
+          {
+              $group: {
+                  _id: {
+                      $year: "$createdAt"
+                  },
+                  revenueData: {
+                      $sum: "$orderAmount"
+                  },
+                  salesData: {
+                      $sum: 1
+                  }
+              }
+          },
+          {
+              $sort: {
+                  "_id": 1
+              }
+          }
+      ])
+      const products = await productModel.aggregate([
+          {
+              $match: {
+                  createdAt: contraints
+              }
+          },
+          {
+              $group: {
+                  _id: {
+                      $year: "$createdAt"
+                  },
+                  productsData: {
+                      $sum: 1
+                  }
+              }
+          },
+          {
+              $sort: {
+                  "_id": 1 
+              }
+          }
+      ])
+      for(let key of sales){
+        console.log("this is ind", key)
+        for(let data of salesData.labels){
+            console.log("iteratong", data)                
+            if (key._id == data) {                        
+                salesData.salesData.push(key.salesData) 
+                salesData.revenueData.push(key.revenueData/1000)
+            }else{
+                salesData.salesData.push(0)
+                salesData.revenueData.push(0)
+            }                    
+        }            
+    }
+    for(let key of products){
+        console.log("this is ind", key)
+        for(let data of salesData.labels){
+            console.log("iteratong", data)                
+            if (key._id == data) {                        
+                salesData.productsData.push(key.productsData) 
+            }else{
+                salesData.productsData.push(0)
+            }                    
+        }            
+    }
+   
+    }   
+    res
+    .status(200)
+    .json(salesData)
+  }catch(error){
+    console.log(error)
+  }
+}
 
 
 
@@ -1269,4 +1457,5 @@ module.exports = {
   generateExcelExportYearly,
   generateExcelExportMonthly,
   generateExcelExportDaily,
+  saleGraphData
 };

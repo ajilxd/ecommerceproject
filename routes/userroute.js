@@ -106,4 +106,7 @@ userRoute.post('/verifywalletpayment',userController.verifyWalletPaymentHandler)
 
 userRoute.get('/search',userController.searchProducts)
 
+// invoice
+userRoute.get('/invoice',userController.invoiceloader)
+userRoute.post('/generate-pdf',userController.invoicepdfdownload)
 module.exports = userRoute;

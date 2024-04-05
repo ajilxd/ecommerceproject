@@ -653,6 +653,7 @@ body {
                               </div>
                             <% }) %>
                           </div>
+                          <div><a href="/invoice?orderid=<%=order._id%>"><button class="btn btn-light invoicebtns">Invoice</button></a></div>
                           <div class="order-actions">
                             <p class="order-status <%= order.status.toLowerCase() %>"><%= order.status %></p>
                             <!-- ... (existing order action buttons) ... -->
@@ -1205,4 +1206,25 @@ axios.post('/addtowallet',{walletamnt}).then((response)=>{
 })
 })
  
+// invoice
+
+invoicebtns=document.querySelectorAll('.invoicebtns');
+console.log(invoicebtns);
+
+// invoicebtns.forEach(i=>{
+//   i.addEventListener('click',function(){
+//     id=this.getAttribute('data-id');
+//     axios.post('/invoice',{id}).then(()=>{
+//       console.log('Invoice requested')
+//     }).catch((error)=>{console.log(error)});
+//   })
+// })
+
+
+
+
+
+
+
+
 </script>

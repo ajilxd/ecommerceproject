@@ -83,4 +83,6 @@ adminRoute.get('/weekexcel',adminController.generateExcelExportWeekly);
 adminRoute.get('/monthexcel',adminController.generateExcelExportMonthly);
 adminRoute.get('/yearexcel',adminController.generateExcelExportYearly);
 adminRoute.get('/dailyexcel',adminController.generateExcelExportDaily);
+adminRoute.post('/graphdata',adminController.saleGraphData);
+
 module.exports = adminRoute;
