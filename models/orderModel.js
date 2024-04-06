@@ -45,6 +45,9 @@ const orderSchema = new mongoose.Schema(
     },
     offerDiscount:{
       type: Number
+    },
+    deliverycharge:{
+      type: Number
     }
   },
   {

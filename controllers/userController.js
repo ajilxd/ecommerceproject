@@ -24,6 +24,8 @@ const {generateRazorpay,signatureCheck} =require("../middleware/razorpay")
 const orderModel = require('../models/orderModel');
 const CouponModel = require("../models/couponModel");
 const walletModel = require("../models/walletModel");
+const NodeGeocoder = require('node-geocoder');
+const geolib= require('geolib');
 
 const loadHomepage = async (req, res) => {
   try {
@@ -690,6 +692,44 @@ const invoicepdfdownload = async (req, res) => {
     res.status(500).send('Error generating PDF');
   }
 };
+
+const calculateDeliveryCharge =async (req,res)=>{
+  try{
+   
+    const options = {
+      provider: 'openstreetmap',
+      language: 'en',
+      region: 'in'
+    };
+    const geocoder = NodeGeocoder(options);
+    const {addressId} =req.body;
+    console.log(req.body)
+    const address =await addressModel.findOne({_id:addressId});
+    const destres = await geocoder.geocode(String(address.zipcode));
+    const sourceres = await geocoder.geocode(String(682009));
+    const destination=destres[0];
+    const source =sourceres[0];
+    console.log({destination,source})
+   let distance =  geolib.getPreciseDistance(
+      { latitude:source.latitude, longitude:source.longitude },
+      { latitude: destination.latitude, longitude: destination.longitude }
+  );
+  distance=Math.floor(distance/1000);
+  console.log(distance);
+  let deliveryCharge;
+  if(distance<50){
+    deliveryCharge=0
+    
+  }else if(distance>=50 && distance<=100){
+    deliveryCharge=50
+  }else{
+    deliveryCharge=100
+  }
+  res.json({deliveryCharge});
+  }catch(error){
+    console.log(error)
+  }
+}
 module.exports = {
   loadHomepage,
   loadloginpage,
@@ -724,5 +764,6 @@ module.exports = {
   verifyWalletPaymentHandler,
   searchProducts,
   invoiceloader,
-  invoicepdfdownload
+  invoicepdfdownload,
+  calculateDeliveryCharge
 };

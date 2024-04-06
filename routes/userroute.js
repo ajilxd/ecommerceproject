@@ -109,4 +109,8 @@ userRoute.get('/search',userController.searchProducts)
 // invoice
 userRoute.get('/invoice',userController.invoiceloader)
 userRoute.post('/generate-pdf',userController.invoicepdfdownload)
+
+// delivery charge
+userRoute.post('/getdeliverycharge',userController.calculateDeliveryCharge);
+
 module.exports = userRoute;

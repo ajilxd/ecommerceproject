@@ -169,6 +169,10 @@
 								<td class="text-black font-weight-bold"><strong>Total discount</strong></td>
 		                      <td class="text-black font-weight-bold"><strong><span id="discountshower"></span></strong></td>
 							</tr>
+							<tr>
+								<td class="text-black font-weight-bold"><strong>Delivery fee</strong></td>
+		                      <td class="text-black font-weight-bold"><strong><span id="deliveryfeeshower"></span></strong></td>
+							</tr>
 		                    <tr>
 		                      <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
 		                      <td class="text-black font-weight-bold"><strong><span id="whendiscount"></span><span id="nodiscount"><%=sumOfAllProducts%></span></strong></td>
@@ -330,13 +334,26 @@
 					}
 				}).catch((error)=>{console.log(error.message)});
 				})
-
+// delivery charge
 			   document.querySelectorAll('.addressradio').forEach(i=>{
 				i.addEventListener('click',function(){
 					isAddress=true;
 					addressId=this.value;
 					console.log(isAddress,addressId)
-
+					axios.post('/getdeliverycharge',{addressId}).then((response)=>{
+						console.log('Pincode ditsance calculation initiatated');
+						const deliveryfee=Number(response.data.deliveryCharge);
+						console.log(typeof deliveryfee);
+						const sumOfAllProducts =document.getElementById('applycouponbtn').getAttribute('data-sum');
+						discount=document.getElementById('c_code').getAttribute('data-activediscount')
+					document.getElementById('deliveryfeeshower').textContent=deliveryfee;
+					document.getElementById('whendiscount').textContent=Number(sumOfAllProducts-discount)+deliveryfee;
+					document.getElementById('nodiscount').textContent=Number(sumOfAllProducts)+deliveryfee;
+					console.log(Number(sumOfAllProducts)+deliveryfee)
+					console.log(response.data)
+					}).catch((error)=>{
+						console.log(error)
+					})
 				})
 			   })
 			   console.log(isAddress,addressId)
@@ -352,8 +369,9 @@
 			   })
 			   document.getElementById('placeorder').addEventListener('click',function(){
 				const couponcode=document.getElementById('c_code').value
+				const deliveryfee=document.getElementById('deliveryfeeshower').textContent
 				if(isPayment&&paymenttype){
-					const formData={paymenttype,addressId,couponcode};
+					const formData={paymenttype,addressId,couponcode,deliveryfee};
 					axios.post('/cart/placeorder',{formData})
 					.then((response)=>{
 						// console.log("new ueess",response);

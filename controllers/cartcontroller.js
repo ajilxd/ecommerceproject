@@ -212,6 +212,7 @@ const placeorderdb = async (req, res) => {
     // console.log(cartData);
     const orderid = String(Math.floor(Math.random() * 10000000000));
     const paymenttype = req.body.formData.paymenttype ;
+    const deliveryfee =Number(req.body.formData.deliveryfee)||0;
     console.log( 'payment:',paymenttype);
     const addressid = req.body.formData.addressId;
     const userId = req.session.user._id;
@@ -228,12 +229,13 @@ const placeorderdb = async (req, res) => {
       deliveryAddress: addressid,
       payment: paymenttype,
       orderId: orderid,
-      orderAmount: totalAmount,
+      orderAmount: totalAmount+deliveryfee,
       orderedItems: [...cartData],
       couponId:couponData?._id,
       couponDiscount:couponData?.discountAmount,
       offers:offerArrays,
-      offerDiscount:totalOfferDiscount||0
+      offerDiscount:totalOfferDiscount||0,
+      deliverycharge:deliveryfee
     });
     await orderData.save();
     const newOrderData =await orderModel.findOne({orderId:orderid});
