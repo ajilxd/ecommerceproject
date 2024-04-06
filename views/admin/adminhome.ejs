@@ -81,6 +81,83 @@
                                 <canvas id="myChart" height="180px"></canvas>
                             </article>
                         </div>
+                        <div class="row">
+                            <div class="card">
+                              <article class="card-body">
+                                <div class="d-flex justify-content-around">
+                                  <div class="col-5">
+                                    <h4 class="fw-bold text-info">Top selling products</h4>
+                                    <table class="table table-striped table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th scope="col">#</th>
+                                          <th scope="col">Product name</th>
+                                          <th scope="col">count</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <% toptenproducts.forEach((i, index) => { %>
+                                        <tr>
+                                          <th scope="row"><%= index %></th>
+                                          <td><%= i._id %></td>
+                                          <td><%= i.count %></td>
+                                        </tr>
+                                        <% }) %>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="col-5">
+                                    <h4 class="fw-bold text-info">Top selling categories</h4>
+                                    <table class="table table-striped table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th scope="col">#</th>
+                                          <th scope="col">Category name</th>
+                                          <th scope="col">count</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <% toptencategories.forEach((i, index) => { %>
+                                        <tr>
+                                          <th scope="row"><%= index %></th>
+                                          <td><%= i._id %></td>
+                                          <td><%= i.count %></td>
+                                        </tr>
+                                        <% }) %>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </article>
+                            </div>
+                            <div class="card">
+                              <article class="card-body">
+                                <div class="d-flex justify-content-around">
+                                  <div class="col-5">
+                                    <h4 class="fw-bold text-info">Top selling brands</h4>
+                                    <table class="table table-striped table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th scope="col">#</th>
+                                          <th scope="col">Category name</th>
+                                          <th scope="col">count</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <% toptenbrands.forEach((i, index) => { %>
+                                        <tr>
+                                          <th scope="row"><%= index %></th>
+                                          <td><%= i._id %></td>
+                                          <td><%= i.count %></td>
+                                        </tr>
+                                        <% }) %>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </article>
+                            </div>
+                          </div>
             </section>
             <!-- content-main end// -->
             <%- include("partials/footer.ejs")%>

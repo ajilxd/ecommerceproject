@@ -30,6 +30,12 @@ const cartSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  category:{
+    type:String
+  },
+  brand:{
+    type:String
+  }
 });
 
 const cartModel = mongoose.model("cart", cartSchema);

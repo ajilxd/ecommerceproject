@@ -68,17 +68,73 @@ const adminHomeLoader = async (req, res) => {
         }
       }
     ])
+
+    const toptenproducts = await orderModel.aggregate([
+      { 
+        $unwind: "$orderedItems" 
+      },
+      {
+        $group: {
+          _id: "$orderedItems.productname",
+          count: { $sum: "$orderedItems.quantity" }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      },
+      {
+        $limit: 10
+      }
+    ]);
+    
+    const toptencategories = await orderModel.aggregate([
+      { 
+        $unwind: "$orderedItems" 
+      },
+      {
+        $group: {
+          _id: "$orderedItems.category",
+          count: { $sum: "$orderedItems.quantity" }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      },
+      {
+        $limit: 10
+      }
+    ]);
+
+    const toptenbrands = await orderModel.aggregate([
+      { 
+        $unwind: "$orderedItems" 
+      },
+      {
+        $group: {
+          _id: "$orderedItems.brand",
+          count: { $sum: "$orderedItems.quantity" }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      },
+      {
+        $limit: 10
+      }
+    ]);
+    
+
     const totalOrders=await orderModel.find({}).countDocuments();
     const monthsalesrevenue =monthlyData[0].totalSalesAmount;
     const totalsales=overallData[0].totalSales;
     const totalproductscount = await productModel.find({}).countDocuments();
     const totalcategorycount =await categoryModel.find({}).countDocuments();
     const totalrevenue=overallData[0].totalSalesAmount
-    console.log(totalproductscount ,'total no of products');
-    console.log(monthsalesrevenue,'monthly sales amount');
-    console.log(overallData[0].totalSales,'total sales')
-    
-    res.render("adminhome",{monthsalesrevenue,totalsales,totalproductscount,totalrevenue,totalOrders,totalcategorycount});
+    // console.log(totalproductscount ,'total no of products');
+    // console.log(monthsalesrevenue,'monthly sales amount');
+    // console.log(overallData[0].totalSales,'total sales')
+    console.log(toptenbrands);
+    res.render("adminhome",{monthsalesrevenue,totalsales,totalproductscount,totalrevenue,totalOrders,totalcategorycount,toptencategories,toptenproducts,toptenbrands });
   } catch (error) {
     console.log(error);
   }

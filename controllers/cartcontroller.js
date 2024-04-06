@@ -28,7 +28,7 @@ const addToCart = async (req, res) => {
     if (!req.session.user) {
       return res.json("nosession");
     }
-    const productData = await productModel.findOne({ _id: req.params.id });
+    const productData = await productModel.findOne({ _id: req.params.id }).populate('categoryId');
     // console.log(productData);
     if (true) {
       const Cartdb = new cartModel({
@@ -40,6 +40,8 @@ const addToCart = async (req, res) => {
         productimage: productData._id,
         totals: productData.price,
         image: productData.image[0],
+        category:productData.categoryId?.categoryName,
+        brand:productData.brand
       });
 
       await Cartdb.save();
