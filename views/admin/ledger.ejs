@@ -28,7 +28,7 @@
         <div class="card mb-4">
             
             <div class="card-body tab mt-5 ms-3">
-                <div id="ledgerbookdiv">
+                <div id="ledgerbookdiv" style="height:500px">
                     <!-- All Orders Content -->
                     
                         <div class="table-responsive">
@@ -37,10 +37,10 @@
                                     <tr>
                                         
                                         <th>#</th>
+                                        <th>Date</th>
                                         <th>Description</th>
                                         <th>Type</th>
                                         <th>Amount</th>
-                                        <th>Date</th>
                                        
                                     </tr>
                                 </thead>
@@ -49,12 +49,13 @@
                                     <tr>
                                         
                                         <td><%=index%></td>
+                                        <td><%=i.createdAt.toISOString().split('T')[0]%></td>
                                         <td><b><%=i.description%></b></td>
                                         <td><%=i.type%></td>
                                         <td>
                                             <%=i.amount%>
                                         </td>
-                                        <td><%=i.createdAt.toISOString().split('T')[0]%></td>
+                                       
                                     </tr>
                                     <%})%>
                                 </tbody>
@@ -63,7 +64,13 @@
                        
                     
                 </div>
-               
+                <div class="d-flex justify-content-center">
+                <div class="col-3 d-flex" id="paginationsection" data-total="<%=totalPages%>">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination" id="pagination"></ul>
+                      </nav>
+                </div>
+            </div>
         </div>
         
     </section>
@@ -71,4 +78,29 @@
 </main>
 
 </body>
+<script>
+     const totalpages=document.getElementById('paginationsection').getAttribute('data-total');
+    function generatePagination(numPages) {
+    const paginationContainer = document.getElementById('pagination');
+    paginationContainer.innerHTML = ''; // Clear existing pagination links
+
+    // Add page number links
+    for (let i = 1; i <= numPages; i++) {
+      paginationContainer.innerHTML += `<li class="page-item d-flex" data-page="${i}"><a class="page-link" href="#" >${i}</a></li>`;
+    }
+  }
+  
+  generatePagination(totalpages);
+  console.log(totalpages)
+  const pagebtns=Array.from(document.getElementsByClassName('page-item'));
+  console.log(pagebtns)
+  let page;
+
+  pagebtns.forEach(i=>{
+    i.addEventListener('click',function(){
+        page=this.getAttribute('data-page');
+        window.location.href=`/admin/ledgerbook?page=${page}`;
+           })
+  })
+</script>
 </html>

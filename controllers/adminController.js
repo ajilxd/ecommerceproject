@@ -1493,8 +1493,15 @@ const saleGraphData =async (req,res)=>{
 
 const ledgerbookloader =async(req,res)=>{
   try{
-    const ledgerData= await ledgerBookModel.find({});
-    res.render('ledger',{ledgerData});
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;   
+    
+    const totalCount = await  ledgerBookModel.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+   
+    const ledgerData= await ledgerBookModel.find({}).sort({createdAt:-1}).skip(skip).limit(limit);
+    res.render('ledger',{ledgerData,totalPages});
   }catch(error){
     console.log(error.message);
   }
