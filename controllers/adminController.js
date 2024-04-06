@@ -13,6 +13,7 @@ const { request } = require("express");
 const CouponModel = require("../models/couponModel");
 const offerModel =require("../models/offerModel");
 const walletModel=require("../models/walletModel");
+const ledgerBookModel =require("../models/ledgerbookmodel");
 const ExcelJS =require('exceljs');
 const adminLoginLoader = async (req, res) => {
   try {
@@ -253,6 +254,11 @@ const addProductDb = async (req, res) => {
       originalPrice:price
     });
     await productData.save();
+    // ledger book entry
+    const overallProductCostForLedgerEntry=cost*quantity;
+    const descriptionForLedgerEntry=`${productname} with ${quantity} quantity has been added to the stock`;
+    const ledgerType ='expense';
+    await ledgerBookModel.create({description:descriptionForLedgerEntry,amount:overallProductCostForLedgerEntry,type:ledgerType})
     res.json(true);
   } catch (error) {
     console.log(error);
@@ -545,7 +551,15 @@ const cancelApprovedHandler = async (req, res) => {
       },{upsert:true})
       console.log(updatedb);
     }
-   
+
+   // ledger book entry
+   let loss=0
+   orderDataBase.orderedItems.map(i=>{
+     loss+=i.price
+   })
+   const ledgerEntryType=`expense`
+   const ledgerEntryDescription=`loss ${loss} maded with order  cancelling of #${orderId}`
+   await ledgerBookModel.create({type:ledgerEntryType,description:ledgerEntryDescription,amount:loss});
     
     }else if(orderDataBase.payment=='wallet'){
       
@@ -567,6 +581,14 @@ const cancelApprovedHandler = async (req, res) => {
         },{upsert:true})
         console.log(updatedb);
       }
+      // ledger book entry
+     let loss=0
+     orderDataBase.orderedItems.map(i=>{
+       loss+=i.price
+     })
+     const ledgerEntryType=`expense`
+     const ledgerEntryDescription=`loss ${loss} maded with order  cancelling of #${orderId}`
+     await ledgerBookModel.create({type:ledgerEntryType,description:ledgerEntryDescription,amount:loss});
     }
     res.json(true);
   } catch (error) {
@@ -616,6 +638,14 @@ const returnApprovedHandler = async (req, res) => {
         upsert: true,
       }
     );
+    // ledger book entry
+    let loss=0
+    orderDataBase.orderedItems.map(i=>{
+      loss+=i.price
+    })
+    const ledgerEntryType=`expense`
+    const ledgerEntryDescription=`loss ${loss} maded with order with returning of #${orderId}`
+    await ledgerBookModel.create({type:ledgerEntryType,description:ledgerEntryDescription,amount:loss});
     res.json(true);
   } catch (error) {
     console.log(error.message);
@@ -1459,7 +1489,16 @@ const saleGraphData =async (req,res)=>{
 }
 
 
+// ledgerbookloader
 
+const ledgerbookloader =async(req,res)=>{
+  try{
+    const ledgerData= await ledgerBookModel.find({});
+    res.render('ledger',{ledgerData});
+  }catch(error){
+    console.log(error.message);
+  }
+}
 
 
 
@@ -1502,7 +1541,6 @@ module.exports = {
   addofferload,
   offerDb ,
   alloffersloader,
-  
   removeOfferHandler,
   reactivateOfferHandler,
   salesReportLoader,
@@ -1513,5 +1551,6 @@ module.exports = {
   generateExcelExportYearly,
   generateExcelExportMonthly,
   generateExcelExportDaily,
-  saleGraphData
+  saleGraphData,
+  ledgerbookloader
 };

@@ -85,4 +85,7 @@ adminRoute.get('/yearexcel',adminController.generateExcelExportYearly);
 adminRoute.get('/dailyexcel',adminController.generateExcelExportDaily);
 adminRoute.post('/graphdata',adminController.saleGraphData);
 
+adminRoute.get('/ledgerbook',adminController.ledgerbookloader)
+
+
 module.exports = adminRoute;

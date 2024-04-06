@@ -35,6 +35,9 @@ const cartSchema = new mongoose.Schema({
   },
   brand:{
     type:String
+  },
+  cost:{
+    type: Number,
   }
 });
 

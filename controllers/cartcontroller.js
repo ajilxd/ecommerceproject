@@ -7,7 +7,8 @@ const couponModel = require("../models/couponModel");
 const walletModel = require("../models/walletModel")
 
 
-const {generateRazorpay} =require("../middleware/razorpay")
+const {generateRazorpay} =require("../middleware/razorpay");
+const ledgerBookModel = require("../models/ledgerbookmodel");
 
 
 const cartLoader = async (req, res) => {
@@ -41,7 +42,8 @@ const addToCart = async (req, res) => {
         totals: productData.price,
         image: productData.image[0],
         category:productData.categoryId?.categoryName,
-        brand:productData.brand
+        brand:productData.brand,
+        cost:productData.cost
       });
 
       await Cartdb.save();
@@ -84,6 +86,8 @@ const addtocartProductDetailsHandler = async (req, res) => {
         productimage: productData._id,
         totals: productData.price * quantity,
         image: productData.image[0],
+        category:productData.categoryId?.categoryName,
+        cost:productData.cost
       });
 
       await Cartdb.save();
@@ -239,7 +243,15 @@ const placeorderdb = async (req, res) => {
     });
     await orderData.save();
     const newOrderData =await orderModel.findOne({orderId:orderid});
-    console.log('order-data',newOrderData)
+    // ledger book entry
+    // calculate prodit
+    let profit=0
+    newOrderData.orderedItems.map(i=>{
+      profit+=i.price-i.cost
+    })
+    const ledgerEntryType=`income`
+    const ledgerEntryDescription=`profit ${profit} maded with order with #${orderid}`
+    await ledgerBookModel.create({type:ledgerEntryType,description:ledgerEntryDescription,amount:profit});
     await cartModel.deleteMany({ userId: userId });
     //updating coupon
     if(couponData){

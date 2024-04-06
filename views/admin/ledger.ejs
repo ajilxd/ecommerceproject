@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orders Dashboard</title>
+<style>
+   
+</style>
+</head>
+<body>
+
+<%- include("./partials/header.ejs")%>
+<%- include("./partials/sidebar.ejs")%>
+
+<main class="main-wrap">
+    <%- include("./partials/nav.ejs")%>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title fw-bolder text-primary">Ledger Book</h2>
+                
+            </div>
+            <div>
+                <input type="text" placeholder="Search by name" class="form-control bg-white" />
+            </div>
+        </div>
+        <div class="card mb-4">
+            
+            <div class="card-body tab mt-5 ms-3">
+                <div id="ledgerbookdiv">
+                    <!-- All Orders Content -->
+                    
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th>#</th>
+                                        <th>Description</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 <%ledgerData.forEach((i,index)=>{%>
+                                    <tr>
+                                        
+                                        <td><%=index%></td>
+                                        <td><b><%=i.description%></b></td>
+                                        <td><%=i.type%></td>
+                                        <td>
+                                            <%=i.amount%>
+                                        </td>
+                                        <td><%=i.createdAt.toISOString().split('T')[0]%></td>
+                                    </tr>
+                                    <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                       
+                    
+                </div>
+               
+        </div>
+        
+    </section>
+    <%- include("./partials/footer.ejs")%>
+</main>
+
+</body>
+</html>
