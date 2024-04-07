@@ -1493,19 +1493,53 @@ const saleGraphData =async (req,res)=>{
 
 const ledgerbookloader =async(req,res)=>{
   try{
-    const page = parseInt(req.query.page) || 1;
-    const limit = 10;
-    const skip = (page - 1) * limit;   
-    
-    const totalCount = await  ledgerBookModel.countDocuments();
-    const totalPages = Math.ceil(totalCount / limit);
+  const { data, pagination } = res.locals;
+  res.render('ledger',{ data, pagination });
    
-    const ledgerData= await ledgerBookModel.find({}).sort({createdAt:-1}).skip(skip).limit(limit);
-    res.render('ledger',{ledgerData,totalPages});
   }catch(error){
     console.log(error.message);
   }
 }
+
+const filterAndPaginateledger = async(req,res,next)=>{
+  try{
+   let data=await ledgerBookModel.find({});
+   let {from,to,page=1} = req.query;
+  //  console.log(req.query);
+   const limit = 10;
+   if(from&&to){
+    console.log('iam inside');
+    from = new Date(from)
+    to = new Date(to);
+    const constraints = {
+      createdAt: {
+        $gte: from,
+        $lte: to
+      }
+    };
+    data = await ledgerBookModel.aggregate([
+      { $match: constraints }
+    ]);
+    // console.log({data})
+   }
+   const start = (page - 1) * limit; 
+   const end =start+limit
+   const totalCount = data.length;
+   const totalPages = Math.ceil(totalCount / limit);
+   const paginatedData = data.slice(start, end);
+   res.locals.data = paginatedData;
+   res.locals.pagination = {
+     currentPage: page,
+     totalPages,
+    
+   };
+ 
+   next();
+  }catch(error){
+    console.log(error);
+  }
+}
+
 
 
 
@@ -1559,5 +1593,7 @@ module.exports = {
   generateExcelExportMonthly,
   generateExcelExportDaily,
   saleGraphData,
-  ledgerbookloader
+  ledgerbookloader,
+  filterAndPaginateledger,
+  
 };
