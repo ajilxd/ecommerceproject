@@ -184,6 +184,7 @@ const placeorderdb = async (req, res) => {
   try {
     console.log('req body at place order',req.body);
     const {couponcode} =req.body.formData;
+    const invoiceid=Math.floor(Math.random()*100000000);
     // console.log('coupon code is',couponcode)
     const cartData = await cartModel.find({ userId: req.session?.user?._id });
     const couponData =await couponModel.findOne({code:couponcode});
@@ -239,7 +240,8 @@ const placeorderdb = async (req, res) => {
       couponDiscount:couponData?.discountAmount,
       offers:offerArrays,
       offerDiscount:totalOfferDiscount||0,
-      deliverycharge:deliveryfee
+      deliverycharge:deliveryfee,
+      invoiceid:invoiceid
     });
     await orderData.save();
     const newOrderData =await orderModel.findOne({orderId:orderid});

@@ -48,7 +48,9 @@ const orderSchema = new mongoose.Schema(
     },
     deliverycharge:{
       type: Number
-    }
+    },
+    invoiceid: {
+      type:String}
   },
   {
     timestamps: true,

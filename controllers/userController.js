@@ -670,12 +670,14 @@ const searchProducts =async(req,res)=>{
 
 const invoiceloader =async (req,res)=>{
   try{
-    invoiceid=Math.floor(Math.random()*100000000);
+    const id =req.query.orderid;
+    const orderdata= await orderModel.findOne({_id:id}).populate('deliveryAddress');
+    console.log(orderdata)
+    invoiceid=orderdata.invoiceid;
     date=new Date().toISOString().split('T')[0];
     console.log(invoiceid,date);
-    const id =req.query.orderid;
-    orderdata= await orderModel.findOne({_id:id}).populate('deliveryAddress');
-    console.log(orderdata)
+   
+    
     res.render('invoice',{orderdata,date,invoiceid})
 }catch(error){
   console.log(error);

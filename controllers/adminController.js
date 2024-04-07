@@ -283,8 +283,8 @@ const addCategoryDb = async (req, res) => {
       res.json(error.message);
     }
 
-    const existingcategory = await categoryModel.findOne({
-      categoryName: req.body.categoryname,
+    const existingcategory = await categoryModel.find({
+      categoryName:new RegExp(req.body.categoryname, 'i')
     });
     if (existingcategory) {
       return res.json("existing category name");

@@ -257,6 +257,7 @@
 				document.getElementById('whendiscount').style.display="none";
 				document.getElementById('discountshower').style.display="none";
 				document.getElementById('nodiscount').style.display="flex";
+				document.getElementById('removecouponbtn').style.display="none";
 			});
 			 const notyf = new Notyf({
         position: {
@@ -273,6 +274,8 @@
 			}
 
 		document.getElementById('applycouponbtn').addEventListener('click',function(){
+			document.getElementById('applycouponbtn').style.display="none";
+			document.getElementById('removecouponbtn').style.display="flex";
 			document.getElementById('whendiscount').style.display="none";
 			document.getElementById('discountshower').style.display="none";
 			document.getElementById('nodiscount').style.display="flex";
@@ -304,7 +307,8 @@
 			document.getElementById('nodiscount').style.display="flex";
 			document.getElementById('discountshower').style.display='none'
 			 document.getElementById('c_code').value=''
-
+			 document.getElementById('removecouponbtn').style.display="none";
+			 document.getElementById('applycouponbtn').style.display="flex";
 		})
 
 

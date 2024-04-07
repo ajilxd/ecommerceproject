@@ -207,6 +207,9 @@
             event.preventDefault();
             axios.post('/admin/addcategory', { status, categoryname, description })
                 .then((response) => {
+                    setTimeout(function(){
+                        errormessage.textContent =""
+                    },3000)
                     if (response.data === false) {
                         errormessage.textContent ="existing category name";
                     }else if(response.data !==true){

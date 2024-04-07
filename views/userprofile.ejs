@@ -653,7 +653,9 @@ body {
                               </div>
                             <% }) %>
                           </div>
+                          <% if(order.status =='Delivered'){%>
                           <div><a href="/invoice?orderid=<%=order._id%>"><button class="btn btn-light invoicebtns">Invoice</button></a></div>
+                          <%}%>
                           <div class="order-actions">
                             <p class="order-status <%= order.status.toLowerCase() %>"><%= order.status %></p>
                             <!-- ... (existing order action buttons) ... -->
