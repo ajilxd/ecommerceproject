@@ -434,8 +434,10 @@ rzp1.on('payment.failed', function (response){
         // alert(response.error.reason);
         // alert(response.error.metadata.order_id);
         // alert(response.error.metadata.payment_id);
-		notyf.error('Payment failture! go to order history for redo the payment');
-		window.location.reload();
+		
+		setTimeout(function(){
+			window.location.href=`/paymentfailture`
+		},2000)
 });
 
 rzp1.open();

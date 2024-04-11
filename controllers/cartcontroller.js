@@ -183,7 +183,7 @@ const checkOutLoader = async (req, res) => {
 
 const placeorderdb = async (req, res) => {
   try {
-    console.log('req body at place order',req.body);
+    // console.log('req body at place order',req.body);
     const {couponcode} =req.body.formData;
     const invoiceid=Math.floor(Math.random()*100000000);
     // console.log('coupon code is',couponcode)
@@ -203,7 +203,7 @@ const placeorderdb = async (req, res) => {
     //offer ids and  offerdiscount
     let offerArrays=[];
     let totalOfferDiscount=0;
-    console.log(totalOfferDiscount);
+    // console.log(totalOfferDiscount);
     for (cartitem of cartData) {
      const product= await productModel.findOne({_id:cartitem.productId});
      const {categoryOfferId, productOfferId, categoryDiscount,productDiscount}=product;
@@ -219,7 +219,7 @@ const placeorderdb = async (req, res) => {
     const orderid = String(Math.floor(Math.random() * 10000000000));
     const paymenttype = req.body.formData.paymenttype ;
     const deliveryfee =Number(req.body.formData.deliveryfee)||0;
-    console.log( 'payment:',paymenttype);
+    // console.log( 'payment:',paymenttype);
     const addressid = req.body.formData.addressId;
     const userId = req.session.user._id;
     let totalAmount = 0;
@@ -289,11 +289,11 @@ const placeorderdb = async (req, res) => {
     
       const updatedb=await walletModel.updateOne({userId:userId},{$push:{transaction:wallettranscation}
       },{upsert:true});
-      console.log(updatedb);
+      // console.log(updatedb);
     }else{
       const updatedb=await walletModel.updateOne({userId:userId},{$push:{transaction:wallettranscation}
       },{upsert:true})
-      console.log(updatedb);
+      // console.log(updatedb);
     }
       await orderModel.updateOne({orderId:orderid},{$set:{status:'placed'}});
       res.json(true);

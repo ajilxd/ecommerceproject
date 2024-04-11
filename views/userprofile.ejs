@@ -655,7 +655,7 @@ body {
                               </div>
                             <% }) %>
                           </div>
-                          <% if(order.status !='PENDING'&&order.payment!='cod'){%>
+                          <% if(order.status !='pending'&&order.payment!='cod'){%>
                           <div><a href="/invoice?orderid=<%=order._id%>"><button class="btn btn-light invoicebtns">Invoice</button></a></div>
                           <%}%>
                           <div class="order-actions">

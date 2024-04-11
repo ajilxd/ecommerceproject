@@ -113,4 +113,10 @@ userRoute.post('/generate-pdf',userController.invoicepdfdownload)
 // delivery charge
 userRoute.post('/getdeliverycharge',userController.calculateDeliveryCharge);
 
+
+// failed payment page loader
+
+userRoute.get('/paymentfailture',userController.failedOrderPageLoad)
+
+
 module.exports = userRoute;

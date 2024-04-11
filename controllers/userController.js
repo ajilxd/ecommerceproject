@@ -718,7 +718,7 @@ const calculateDeliveryCharge =async (req,res)=>{
       { latitude: destination.latitude, longitude: destination.longitude }
   );
   distance=Math.floor(distance/1000);
-  console.log(distance);
+  // console.log(distance);
   let deliveryCharge;
   if(distance<50){
     deliveryCharge=0
@@ -733,6 +733,25 @@ const calculateDeliveryCharge =async (req,res)=>{
     console.log(error)
   }
 }
+
+
+
+const  failedOrderPageLoad= async (req,res)=>{
+  try{
+    const orderData = req.session.user;
+    const userData = await User.find({ email: req.session?.user?.email });
+    console.log(`session at order fail`,req.session);
+    console.log(orderData);
+    res.render('orderpaymentfailture',{userData,orderData})
+  }catch(error){
+    console.log(error)
+  }
+}
+
+
+
+
+
 module.exports = {
   loadHomepage,
   loadloginpage,
@@ -768,5 +787,6 @@ module.exports = {
   searchProducts,
   invoiceloader,
   invoicepdfdownload,
-  calculateDeliveryCharge
+  calculateDeliveryCharge,
+  failedOrderPageLoad
 };
