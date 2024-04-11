@@ -188,9 +188,12 @@
 		                      <p class="mb-0">
 								<label class="checkbox">
 									<span style="display:block;"><strong>**Pay when you receive it!** </strong>Choose Cash on Delivery and pay in cash to the delivery person upon receiving your order.</span>
-
+								<%if( sumOfAllProducts<=1000){%>
 								<input type="checkbox" class="mt-4 inputcheck" value="cod">
 								Cash on delivery</a>
+								<%}else{%>
+								<p class="text-danger">COD isnt available</p>
+								<%}%>
 							  </label></p>
 		                    </div>
 		                  </div>
@@ -213,14 +216,14 @@
 
 		                  <div class="collapse" id="collapsepaypal">
 		                    <div class="py-2">
-		                      <%if(walletData.balance> sumOfAllProducts){%>
+		                      <%if(walletData?.balance> sumOfAllProducts){%>
 								<div class="d-flex justify-content-between">
 							<div>
 							  <input type="checkbox" id= walletcheck" class="mt-4 inputcheck" value="wallet"><span class="mx-3">Pay via wallet</span>
 							</div>
 							  <div>
-							  <div><span class="  m-5">Wallet balance</span><span class="text-success "><%=walletData.balance%></div>
-							  <div><span class="  mx-5">After payment</span><span class=""><%=walletData.balance- sumOfAllProducts%>₹</span></div>
+							  <div><span class="  m-5">Wallet balance</span><span class="text-success "><%=walletData?.balance%></div>
+							  <div><span class="  mx-5">After payment</span><span class=""><%=walletData?.balance- sumOfAllProducts%>₹</span></div>
 							  </div>
 							</div>
 							  <%}else{%>

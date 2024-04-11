@@ -539,16 +539,18 @@ body {
                     
                     <th scope="col">Date</th>
                     <th scope="col">Amount</th>
+                    <th scope="col">Remarks</th>
                     <th scope="col">Type</th>
                   </tr>
                 </thead>
                 <tbody>
                   
-                  <%transaction.map((i,index)=>{%>
+                  <%transaction?.map((i,index)=>{%>
                   <tr>
                   
                     <td><%=i?.date.toISOString().split('T')[0]%></td>
                     <td><%=i?.amount%></td>
+                    <td><%=i?.remarks%></td>
                     <td><%=i.mode%></td>
                   </tr>
                   <%})%>
@@ -653,7 +655,7 @@ body {
                               </div>
                             <% }) %>
                           </div>
-                          <% if(order.status =='Delivered'){%>
+                          <% if(order.status !='PENDING'&&order.payment!='cod'){%>
                           <div><a href="/invoice?orderid=<%=order._id%>"><button class="btn btn-light invoicebtns">Invoice</button></a></div>
                           <%}%>
                           <div class="order-actions">
@@ -1129,7 +1131,7 @@ rzp1.on('payment.failed', function (response){
 		notyf.error('Payment failture! go to order history for redo the payment');
 });
 
-rzp1.open();
+
 
 
 			   }
@@ -1159,7 +1161,7 @@ rzp1.on('payment.failed', function (response){
 		notyf.error('Payment failture! go to order history for redo the payment');
 });
 
-rzp1.open();
+
 
 
 			   }

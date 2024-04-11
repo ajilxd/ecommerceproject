@@ -640,6 +640,7 @@ const verifyWalletPaymentHandler =async(req,res)=>{
       amount:amount*0.01,
       mode:'Deposit',
       date:Date.now(),
+      remarks:`Money added to wallet`
     }
     await walletModel.updateOne(
       { userId: userId },

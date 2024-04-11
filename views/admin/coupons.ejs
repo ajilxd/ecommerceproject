@@ -6,8 +6,7 @@
             <section class="content-main">
                 <div class="content-header">
                     <div>
-                        <h2 class="content-title card-title fw-bold display-6">Coupons</h2>
-                        <p class="lead fw-medium ">coupon management</p>
+                        <h2 class="h4 text-link">Coupon management</h2>
                     </div>
                     <div>
                         <a href="/admin/addcoupon"><button class="btn  btn-success text-white   ">Create new coupon</button></a>
@@ -43,7 +42,7 @@
                                             <td><%= i.criteriaAmount %></td>
                                             <td><%= i.status %></td>
                                             <td>1</td>
-                                            <td><%= i.expiryDate %></td>
+                                            <td><%= i.expiryDate.toISOString().split('T')[0] %></td>
                                             <td><a href="/admin/editcoupon/<%=i._id%>"><button class="btn btn-warning btn-sm rounded-pill px-4 text-white"  >Edit</button></a></td>
                                             <!-- data-bs-toggle="modal" data-bs-target="#editcategory" data-category-id="<%= i.id %>" data-category-name="<%= i.categoryName %>" data-category-description="<%= i.description %>" data-category-status="<%= i.status %>">
                                                         Edit -->

@@ -41,7 +41,7 @@ const addToCart = async (req, res) => {
         productimage: productData._id,
         totals: productData.price,
         image: productData.image[0],
-        category:productData.categoryId?.categoryName,
+        category:productData.categoryId.categoryName,
         brand:productData.brand,
         cost:productData.cost
       });
@@ -86,7 +86,8 @@ const addtocartProductDetailsHandler = async (req, res) => {
         productimage: productData._id,
         totals: productData.price * quantity,
         image: productData.image[0],
-        category:productData.categoryId?.categoryName,
+        category:productData.categoryId.categoryName,
+        brand:productData.brand,
         cost:productData.cost
       });
 
@@ -282,6 +283,7 @@ const placeorderdb = async (req, res) => {
                     amount:totalAmount,
                     mode:'Debit',
                     date:Date.now(),
+                    remarks:`Wallet amount has been debited for order #${orderid} `
                   }
      if(walletDataBase){
     

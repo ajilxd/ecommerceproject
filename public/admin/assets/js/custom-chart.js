@@ -103,6 +103,7 @@
                 }
             }
         });
+        fetchDataAndUpdateChart("yearly",2024);
     } //End if
 
     

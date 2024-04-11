@@ -6,12 +6,10 @@
             <section class="content-main">
                 <div class="content-header">
                     <div>
-                        <h2 class="content-title card-title">Users</h2>
-                        <p>User management</p>
+                        <h2 class="h4 text-link">User Management</h2>
+                       
                     </div>
-                    <div>
-                        <input type="text" placeholder="Search by name" class="form-control bg-white" />
-                    </div>
+                    
                 </div>
                 <div class="card mb-4">
                     
@@ -19,14 +17,10 @@
                  
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table ">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" />
-                                            </div>
-                                        </th>
+                                       
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>mobileno</th>
@@ -38,18 +32,14 @@
                                 <tbody>
                                  <%users.forEach((i,index)=>{%>
                                     <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" />
-                                            </div>
-                                        </td>
+                                        
                                         <td><%=index%></td>
                                         <td><b><%=i.name%></b></td>
                                         <td><%=i.mobilenumber%></td>
                                         <td>
                                             <%=i.email%>
                                         </td>
-                                        <td><%=i.createdAt%></td>
+                                        <td><%=i.createdAt.toISOString().split('T')[0]%></td>
                                         <td class="text-end">
                                             <% if(i.isBlocked===true){%>
                                                 <button class="button btn-primary unblockbuttons "  data-id="<%=i._id%>">Unblock</button>

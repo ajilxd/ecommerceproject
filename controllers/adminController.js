@@ -283,7 +283,7 @@ const addCategoryDb = async (req, res) => {
       res.json(error.message);
     }
 
-    const existingcategory = await categoryModel.find({
+    const existingcategory = await categoryModel.findOne({
       categoryName:new RegExp(req.body.categoryname, 'i')
     });
     if (existingcategory) {
@@ -540,6 +540,7 @@ const cancelApprovedHandler = async (req, res) => {
       amount:orderDataBase.orderAmount,
       mode:'Credit',
       date:Date.now(),
+      remarks:`Amount has been added to wallet via refund od cancelled order #${orderId}`
     }
     if(walletDataBase){
     
@@ -622,6 +623,7 @@ const returnApprovedHandler = async (req, res) => {
         amount:orderDataBase.orderAmount,
         mode:'Credit',
         date:Date.now(),
+        remarks:`amount has been added to wallet via return refund od order ${orderId}`
       }
     const walletDataBase = await walletModel.findOne({userId:userId})
     await walletModel.updateOne({userId:userId},{balance:walletDataBase.balance+orderDataBase.orderAmount,$push:{transaction: wallettranscation}
