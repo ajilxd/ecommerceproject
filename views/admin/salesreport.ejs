@@ -371,6 +371,7 @@
     <%- include("./partials/footer.ejs")%>
 </main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 <!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -525,29 +526,11 @@
 
     // Generate PDF
 document.getElementById('generatePDF').addEventListener('click', () => {
-    console.log('hi');
-  const content = document.getElementById('fulldata').innerHTML;
-  const data = { html: content };
- 
-  fetch('/admin/generate-pdf', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.blob())
-  .then(blob => {
-    const url = window.URL.createObjectURL(new Blob([blob]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'file.pdf');
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
-  })
-  .catch(error => console.error('Error:', error));
-});
+    const data =document.getElementById('fulldata');
+    html2pdf()
+					 .from(data)
+					 .save();
+})
 
 // Generate Excel
 document.getElementById('generateExcel').addEventListener('click', () => {
