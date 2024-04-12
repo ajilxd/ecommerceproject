@@ -56,6 +56,8 @@ const logoutFn = async (req, res) => {
 
 const loadRegisterpage = async (req, res) => {
   try {
+    const referall =req.query.referall;
+    req.session.referall=referall;
     const userData = await userModal.find({ _id: req.session?.user?._id });
     res.render("register", { userData });
   } catch (error) {
@@ -65,8 +67,8 @@ const loadRegisterpage = async (req, res) => {
 
 const signupDb = async (req, res, next) => {
   try {
-    console.log("req.body", req.body);
-    const validation = await signupSchema.validateAsync(req.body);
+    
+    await signupSchema.validateAsync(req.body);
     const existUser = await User.findOne({ email: req.body.email });
     if (existUser) {
       return res.json("Email is already taken");
@@ -85,6 +87,18 @@ const signupDb = async (req, res, next) => {
     isVerified:false
   });
   await userdata.save();
+  console.log(req.session,`Session of signupDb`);
+  if(req.session.referall){
+    // adding referall money to referrer wallet
+    const wallettranscation=
+    {
+      amount:1000,
+      mode:'Credit',
+      date:Date.now(),
+      remarks:`referal bonus of adding a user to the furni family`
+    }
+    await walletModel.updateOne({userId:req.session.referall},{$inc:{balance:1000},$push:{transaction:wallettranscation}},{upsert:true})
+  }
   res.json(true);
   next();
 };

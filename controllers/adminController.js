@@ -49,7 +49,7 @@ const adminHomeLoader = async (req, res) => {
     
       {
         $group: {
-          _id: { $month: new Date() },
+          _id: { $month: new Date()},
           totalSales: { $sum: 1 },
           totalSalesAmount: { $sum: "$orderAmount" },
           totalOfferDiscount: { $sum: "$offerDiscount" },
@@ -58,6 +58,32 @@ const adminHomeLoader = async (req, res) => {
       }
       
     ])
+
+const currentDate = new Date();
+const currentMonth = currentDate.getMonth() + 1; // Months are 0-indexed, so we add 1
+const currentYear = currentDate.getFullYear();
+
+const currentMonthOrders = await orderModel.aggregate([
+  {
+    $match: {
+      $expr: {
+        $and: [
+          { $eq: [{ $month: "$createdAt" }, currentMonth] },
+          { $eq: [{ $year: "$createdAt" }, currentYear] }
+        ]
+      }
+    }
+  },
+  {
+    $group: {
+      _id: null, // We don't need to group by anything, just get the totals
+      totalSales: { $sum: 1 },
+      totalSalesAmount: { $sum: "$orderAmount" },
+      totalOfferDiscount: { $sum: "$offerDiscount" },
+      totalCouponDiscount: { $sum: "$couponDiscount" }
+    }
+  }
+]);
     const overallData = await orderModel.aggregate([
       {
         $group: {
@@ -123,10 +149,10 @@ const adminHomeLoader = async (req, res) => {
         $limit: 10
       }
     ]);
-    
-
+   
+ console.log(`current month revenue `,currentMonthOrders )
     const totalOrders=await orderModel.find({}).countDocuments();
-    const monthsalesrevenue =monthlyData[0].totalSalesAmount;
+    const monthsalesrevenue =currentMonthOrders[0].totalSalesAmount;
     const totalsales=overallData[0].totalSales;
     const totalproductscount = await productModel.find({}).countDocuments();
     const totalcategorycount =await categoryModel.find({}).countDocuments();
@@ -134,7 +160,6 @@ const adminHomeLoader = async (req, res) => {
     // console.log(totalproductscount ,'total no of products');
     // console.log(monthsalesrevenue,'monthly sales amount');
     // console.log(overallData[0].totalSales,'total sales')
-    console.log(toptenbrands);
     res.render("adminhome",{monthsalesrevenue,totalsales,totalproductscount,totalrevenue,totalOrders,totalcategorycount,toptencategories,toptenproducts,toptenbrands });
   } catch (error) {
     console.log(error);
@@ -534,7 +559,7 @@ const cancelApprovedHandler = async (req, res) => {
     console.log(orderDataBase.payment);
     if(orderDataBase.payment=='online'){
     const walletDataBase = await walletModel.findOne({userId:userId});
-    console.log(walletDataBase);
+    // console.log(walletDataBase);
     const wallettranscation=
     {
       amount:orderDataBase.orderAmount,
@@ -1343,7 +1368,7 @@ const generateExcelExportDaily =async(req,res)=>{
 
 const saleGraphData =async (req,res)=>{
   try{
-    console.log(req.body)
+     console.log(req.body)
     let salesData =
     {
         "labels": [],
@@ -1383,6 +1408,7 @@ const saleGraphData =async (req,res)=>{
               }
           }
       ])
+      console.log(`sales :`,sales);
       const products = await productModel.aggregate([
         {
             $match: {
@@ -1411,7 +1437,7 @@ const saleGraphData =async (req,res)=>{
     console.log(salesData)
     }else{
       console.log('else')
-      salesData.labels = [`${time-10}`, `${time-9}`, `${time-8}`, `${time-7}`, `${time-6}`, `${time-5}`, `${time-4}`, `${time-3}`, `${time-2}`, `${time-1}`, `${time}`];
+      salesData.labels = [ `${time-6}`, `${time-5}`, `${time-4}`, `${time-3}`, `${time-2}`, `${time-1}`, `${time}`];
       const contraints = {
           $gte: new Date(`${time-10}-01-01T00:00:00.000Z`),
           $lte: new Date(`${time}-12-31T00:00:00.000Z`)            
