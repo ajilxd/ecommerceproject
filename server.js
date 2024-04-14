@@ -2,6 +2,9 @@ const express = require("express");
 const nocache = require("nocache");
 const app = express();
 const path = require("path");
+require('dotenv').config();
+const DB_URI=process.env.MONGODB_URI;
+const SESSION_SECRET=process.env.SESSION_SECRET_KEY
 app.use(express.static("public"));
 
 app.set("view engine", "ejs");
@@ -9,7 +12,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://ajilpramoddev:pnidcoi7JOiFZbsT@cluster0.en7lqrz.mongodb.net/furni?retryWrites=true&w=majority&appName=Cluster0");
+mongoose.connect(DB_URI);
 
 const morgan = require("morgan");
 app.use(morgan("dev"));
@@ -18,7 +21,7 @@ const session = require("express-session");
 // newwww
 app.use(
   session({
-    secret: "your-secret-key",
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
   })
