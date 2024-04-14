@@ -9,7 +9,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 const mongoose = require("mongoose");
-db = mongoose.connect("mongodb+srv://ajilpramoddev:<password>@cluster0.en7lqrz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+mongoose.connect("mongodb+srv://ajilpramoddev:pnidcoi7JOiFZbsT@cluster0.en7lqrz.mongodb.net/furni?retryWrites=true&w=majority&appName=Cluster0");
 
 const morgan = require("morgan");
 app.use(morgan("dev"));
