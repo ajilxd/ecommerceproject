@@ -3,8 +3,8 @@ const nocache = require("nocache");
 const app = express();
 const path = require("path");
 require('dotenv').config();
-const DBURI=process.env.MONGODB_URI;
-const SESSIONSECRET=process.env.SESSION_SECRET_KEY
+const DBURI="mongodb+srv://ajilpramoddev:pnidcoi7JOiFZbsT@cluster0.en7lqrz.mongodb.net/furni?retryWrites=true&w=majority&appName=Cluster0"||process.env.MONGODB_URI;
+const SESSIONSECRET='AMODISGREAT'||process.env.SESSION_SECRET_KEY
 app.use(express.static("public"));
 
 app.set("view engine", "ejs");
