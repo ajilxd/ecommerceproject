@@ -12,7 +12,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 const mongoose = require("mongoose");
-mongoose.connect(DBURI);
+mongoose.connect(`${DBURI}`);
 
 const morgan = require("morgan");
 app.use(morgan("dev"));
@@ -21,7 +21,7 @@ const session = require("express-session");
 // newwww
 app.use(
   session({
-    secret: SESSIONSECRET,
+    secret: `${SESSIONSECRET}`,
     resave: false,
     saveUninitialized: true,
   })
