@@ -641,7 +641,7 @@ body {
                           <div class="order-header d-flex">
                             <p class="order-date">Order placed - <%= order.createdAt.toISOString().split('T')[0] %></p>
                             <p class="order-total">Totals - <%= order.orderAmount %>/-</p>
-                            <p class="order-pincode">Pincode - 673591</p>
+                            <p class="order-pincode">Pincode - <%=order.deliveryAddress?.pincode%></p>
                             <p class="order-id">#<%= order.orderId %></p>
                           </div>
                           <div class="order-items">
