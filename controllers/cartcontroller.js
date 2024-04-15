@@ -122,12 +122,14 @@ const quantityUpdate = async (req, res) => {
       { $set: { quantity: Chngquantity, totals: totalsum } }
     );
     const cartDat = await cartModel.findOne({ _id: cartId });
-    const cartDocs = await cartModel.find({userId:req.session?.user?._id});
+    const cartDocs = await cartModel.find({userId:req.session.user._id});
+
     const sumOfAllProducts = cartDocs.reduce(
-      (total, cart) => total + cart.totals,
+      (total, cart) => total += cart.totals,
       0
     );
-    // console.log(sumOfAllProducts);
+    console.log({cartDocs})
+     console.log('sum of all products from user',sumOfAllProducts);
     await userModel.updateOne(
       { _id: userId },
       { $set: { totalcart: sumOfAllProducts } }
@@ -158,7 +160,7 @@ const checkOutLoader = async (req, res) => {
       .populate("productId");
     const walletData = await walletModel.findOne({userId:req.session?.user?._id});
     // const userData = await userModel.findOne({ _id: req.session.user._id });
-    const cartDocs = await cartModel.find({});
+    const cartDocs = await cartModel.find({userId:req.session.user._id});
     const sumOfAllProducts = cartDocs.reduce(
       (total, cart) => total + cart.totals,
       0

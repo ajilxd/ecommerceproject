@@ -710,6 +710,8 @@ const invoicepdfdownload = async (req, res) => {
   }
 };
 
+
+
 const calculateDeliveryCharge =async (req,res)=>{
   try{
    
@@ -722,6 +724,7 @@ const calculateDeliveryCharge =async (req,res)=>{
     const {addressId} =req.body;
     console.log(req.body)
     const address =await addressModel.findOne({_id:addressId});
+    console.log(typeof address.zipcode);
     const destres = await geocoder.geocode(String(address.zipcode));
     const sourceres = await geocoder.geocode(String(682009));
     const destination=destres[0];
@@ -747,6 +750,7 @@ const calculateDeliveryCharge =async (req,res)=>{
     console.log(error)
   }
 }
+
 
 
 
