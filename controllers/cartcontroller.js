@@ -122,7 +122,7 @@ const quantityUpdate = async (req, res) => {
       { $set: { quantity: Chngquantity, totals: totalsum } }
     );
     const cartDat = await cartModel.findOne({ _id: cartId });
-    const cartDocs = await cartModel.find({});
+    const cartDocs = await cartModel.find({userId:req.session?.user?._id});
     const sumOfAllProducts = cartDocs.reduce(
       (total, cart) => total + cart.totals,
       0
