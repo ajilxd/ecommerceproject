@@ -56,7 +56,8 @@ const logoutFn = async (req, res) => {
 
 const loadRegisterpage = async (req, res) => {
   try {
-    const referall =req.query.referall;
+    const referall =req.query.referral;
+    console.log('your regerall',referall)
     req.session.referall=referall;
     const userData = await userModal.find({ _id: req.session?.user?._id });
     res.render("register", { userData });

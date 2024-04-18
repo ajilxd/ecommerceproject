@@ -286,6 +286,8 @@ body {
                     <li class="sidebar-item" data-target="#edit-password">Edit Password</li>
                     <li class="sidebar-item" data-target="#order-history">Order History</li>
                     <li class="sidebar-item" data-target="#walletdiv">My wallet</li>
+                    <li class="sidebar-item" data-target="#referalldiv">My referall</li>
+                    
                 </ul>
             </div>
  <!-- edit address modal  -->
@@ -599,6 +601,21 @@ body {
                       </div>
                     </div>
                 </div>
+
+                <div id="referalldiv" class="content-item" style="display: none;">
+                  <div class="card-body">
+                    <p>Click the button to copy the text:</p>
+                    <div class="input-group mb-3">
+                      <input type="text" id="textToCopy" class="form-control" value="<%=referall%>" readonly>
+                      <div class="input-group-append">
+                        <button class="btn btn-primary" onclick="copyText()">Copy Text</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
                 <div id="edit-password" class="content-item" style="display: none;">
                     <!-- Edit Password Form Goes Here -->
                     <h2>Edit Password</h2>
@@ -772,6 +789,8 @@ body {
             x: 'right',
             y: 'top',
         }});
+
+
   //order cancel
  function openCancelModal() {
       document.getElementById('cancelModal').classList.add('is-active');
@@ -854,14 +873,6 @@ returnModalbtns.forEach(i=>{
         })
     });
 });  
-
-
-
-
-
-
-
-
 
 
 
@@ -1210,19 +1221,6 @@ axios.post('/addtowallet',{walletamnt}).then((response)=>{
 })
 })
  
-// invoice
-
-invoicebtns=document.querySelectorAll('.invoicebtns');
-console.log(invoicebtns);
-
-// invoicebtns.forEach(i=>{
-//   i.addEventListener('click',function(){
-//     id=this.getAttribute('data-id');
-//     axios.post('/invoice',{id}).then(()=>{
-//       console.log('Invoice requested')
-//     }).catch((error)=>{console.log(error)});
-//   })
-// })
 
 
 
@@ -1230,5 +1228,29 @@ console.log(invoicebtns);
 
 
 
+</script>
+<script>
+  function copyText() {
+    // Get the text to copy
+    var textToCopy = document.getElementById("textToCopy").innerText;
 
+    // Create a temporary textarea element
+    var tempTextArea = document.createElement("textarea");
+    tempTextArea.value = textToCopy;
+
+    // Append the textarea to the body
+    document.body.appendChild(tempTextArea);
+
+    // Select the text in the textarea
+    tempTextArea.select();
+
+    // Copy the selected text to the clipboard
+    document.execCommand("copy");
+
+    // Remove the temporary textarea
+    document.body.removeChild(tempTextArea);
+
+    // Show a message to the user
+    alert("Text copied to clipboard!");
+  }
 </script>

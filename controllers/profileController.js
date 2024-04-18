@@ -5,7 +5,7 @@ const walletModel =require("../models/walletModel")
 const profileLoader = async (req, res) => {
   try {
     const orderData = await orderModel.find({ userId: req.session.user._id }).sort({createdAt:-1});
-
+    const referall =`https://ajilpramod.online/register?referral=${req.session.user._id}`;
     const addressData = await addressModel.find({
       userId: req.session.user._id,
     });
@@ -22,7 +22,8 @@ const profileLoader = async (req, res) => {
       orderData: orderData,
       addressData,
       walletData,
-      transaction
+      transaction,
+      referall
     });
   } catch (error) {
     console.log(error.message);
